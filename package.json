@@ -1,0 +1,23 @@
+{
+  "name": "yip-react-front-end",
+  "homepage": "https://daugardas.github.io/yearsInPixels-react-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "gh-pages": "^1.2.0",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
+    "react-recaptcha": "^2.3.8",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.1.4",
+    "recharts": "^1.0.0-beta.10"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  }
+}
