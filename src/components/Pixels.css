@@ -183,8 +183,8 @@ select:hover {
 }
 
 .new-pixel-wrap {
-  /*  width: 400px; */
-  width: fit-content;
+  width: 400px;
+  /* width: fit-content; */
 }
 
 .new-pixel-wrap .submit-button {
