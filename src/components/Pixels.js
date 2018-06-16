@@ -503,6 +503,7 @@ class EditPixel extends Component {
         addNewEmotions: true
       });
     }
+    console.log(`State when removed emotion:`, this.state);
   }
   handleSelectChange(moodIndex) {
     let emotions = this.state.moods;
@@ -520,6 +521,8 @@ class EditPixel extends Component {
         moods: emotions
       });
     }
+
+    console.log(`State when selected new emotion:`, this.state);
   }
   handleInputRangeChange(moodIndex, moodId) {
     let length = this.state.moods.length;
@@ -572,6 +575,10 @@ class EditPixel extends Component {
       this.setState({
         moods: moods
       });
+
+      setTimeout(()=> {
+        console.log(`State with updated moods percentages:`, this.state);
+      }, 300);
     }
   }
   handleJournalChange(event) {
@@ -620,6 +627,9 @@ class EditPixel extends Component {
     this.setState({
       moods: newDayMoods
     });
+
+    console.log(`new Day moods:`, newDayMoods);
+    console.log(`State, before updating with new mood:`, this.state);
   }
   handleEditPixelClick() {
     this.setState({
@@ -661,6 +671,9 @@ class EditPixel extends Component {
               });
               this.props.refreshPixelMoods();
             } else {
+              console.log(`Edit pixel state:`, this.state);
+              console.log(`Requested submit with data:`, data);
+
               this.props.messages.push({ text: `Error ${httpRequest.status}: ${httpRequest.statusText}`, type: 'error' });
               let response = JSON.parse(httpRequest.responseText);
               if (response.hasOwnProperty('errors')) {
