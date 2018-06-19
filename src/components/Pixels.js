@@ -33,7 +33,8 @@ class Day extends Component {
       moodDayID: null,
       moods: null,
       journal: "",
-      background: `transparent`
+      background: `transparent`,
+      allowEdit: false
     }
     this.handleEditClick = this.handleEditClick.bind(this);
   }
@@ -50,6 +51,12 @@ class Day extends Component {
   }
   componentWillMount() {
     const { pixelMoods, userMoods } = this.props;
+    const todayTime = new Date().setHours(0, 0, 0, 0);
+
+    this.setState({
+      allowEdit: todayTime >= this.props.date ? true : false
+    });
+
     if (pixelMoods !== undefined) {
       this.setState({
         moodDayID: pixelMoods.id,
@@ -59,10 +66,11 @@ class Day extends Component {
 
       // if this component day equals to todays date
       // then call editPixel() to show already set moods
-      if (this.props.date === new Date().setHours(0, 0, 0, 0)) {
+      if (this.props.date === todayTime) {
         let journal = pixelMoods.journal === null ? "" : pixelMoods.journal;
         this.props.editPixel(pixelMoods.id, pixelMoods.dayMoods, journal, this.props.date);
       }
+      
       // generate background for the day component
       const moods = pixelMoods.dayMoods;
       let colors = ``;
@@ -90,7 +98,9 @@ class Day extends Component {
     }
   }
   handleEditClick() {
-    this.props.editPixel(this.state.moodDayID, this.state.moods, this.state.journal, this.props.date);
+    if (this.state.allowEdit) {
+      this.props.editPixel(this.state.moodDayID, this.state.moods, this.state.journal, this.props.date);
+    }
   }
 }
 class Month extends Component {
@@ -576,7 +586,7 @@ class EditPixel extends Component {
         moods: moods
       });
 
-      setTimeout(()=> {
+      setTimeout(() => {
         console.log(`State with updated moods percentages:`, this.state);
       }, 300);
     }
@@ -712,7 +722,7 @@ class EditPixel extends Component {
     });
     this.removeInterval = setInterval(() => {
       this.setState({
-        removeCounter: this.state.removeCounter === 0 ? 0:this.state.removeCounter - 1
+        removeCounter: this.state.removeCounter === 0 ? 0 : this.state.removeCounter - 1
       });
       switch (this.state.removeCounter) {
         case 3:
