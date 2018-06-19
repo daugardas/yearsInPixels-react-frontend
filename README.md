@@ -7,7 +7,6 @@ A web-app (maybe later on android and ios) project I made in my free time.
 - [ ] Emphasize Pixels tab
 - [ ] Create graphs page
 - [ ] Implement 'cant remove pixel, cause it is part of some day emotions' thing in the server
-- [ ] Logging in an account should direct to Pixels page instead of leaving in the home/About page
 - [ ] Highlight current day in pixel grid
 - [ ] Disable putting in moods after current day
 - [ ] Do not display slider if only one mood selected
