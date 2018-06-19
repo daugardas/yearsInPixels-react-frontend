@@ -4,7 +4,6 @@ A web-app (maybe later on android and ios) project I made in my free time.
 
 ### To-do list
 
-- [ ] Move the logout tab to the far right.
 - [ ] Emphasize Pixels tab
 - [ ] Create graphs page
 - [ ] Make month names in pixel grid longer
