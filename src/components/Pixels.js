@@ -43,6 +43,7 @@ class Day extends Component {
     let dayStyles = {
       background: this.state.background
     };
+    
     return (
       <div className="day" style={dayStyles} onClick={this.handleEditClick}>
         <div className={hoverBorder}></div>
@@ -70,7 +71,7 @@ class Day extends Component {
         let journal = pixelMoods.journal === null ? "" : pixelMoods.journal;
         this.props.editPixel(pixelMoods.id, pixelMoods.dayMoods, journal, this.props.date);
       }
-      
+
       // generate background for the day component
       const moods = pixelMoods.dayMoods;
       let colors = ``;
@@ -392,6 +393,9 @@ class NewPixel extends Component {
         }
       }
     }
+  }
+  componentDidUpdate(){
+    this.props.resizeBackground();
   }
 }
 class EditPixel extends Component {
@@ -809,6 +813,9 @@ class EditPixel extends Component {
     mm = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
     return formatString.replace("#hhhh#", hhhh).replace("#mm#", mm);
   }
+  componentDidUpdate(){
+    this.props.resizeBackground();
+  }
 }
 export class Pixels extends Component {
   constructor(props) {
@@ -873,14 +880,16 @@ export class Pixels extends Component {
                 userMoods={this.state.userMoods}
                 refreshPixelMoods={this.getPixelMoods}
                 messages={this.props.messages}
-                renderMessages={this.props.renderMessages} />
+                renderMessages={this.props.renderMessages}
+                resizeBackground={this.props.resizeBackground} />
             ) : (
                 <NewPixel
                   date={this.state.editDate}
                   userMoods={this.state.userMoods}
                   messages={this.props.messages}
                   renderMessages={this.props.renderMessages}
-                  refreshPixelMoods={this.getPixelMoods} />
+                  refreshPixelMoods={this.getPixelMoods}
+                  resizeBackground={this.props.resizeBackground} />
               )
             }
           </div>
