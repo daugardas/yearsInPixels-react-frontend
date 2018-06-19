@@ -43,10 +43,9 @@ class Day extends Component {
     let dayStyles = {
       background: this.state.background
     };
-    
     return (
       <div className="day" style={dayStyles} onClick={this.handleEditClick}>
-        <div className={hoverBorder}></div>
+        <div className={`${hoverBorder}${!this.state.allowEdit ? ' cursor-not-allowed':''}`} ></div>
       </div>
     );
   }

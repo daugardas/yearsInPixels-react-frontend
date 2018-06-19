@@ -66,6 +66,13 @@
   justify-content: center;
 }
 
+.cursor-not-allowed {
+  cursor: not-allowed !important;
+}
+.cursor-not-allowed:hover {
+  cursor: not-allowed !important;
+}
+
 .month>.day:last-child {
   border-bottom: 3px solid black;
 }
