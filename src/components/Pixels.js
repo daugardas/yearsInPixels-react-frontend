@@ -119,7 +119,7 @@ class Month extends Component {
     }
     return (
       <div className="month">
-        <div className="month-name">{monthDate.toDateString().split(' ')[1].split('')[0]}</div>
+        <div className="month-name">{monthDate.toDateString().split(' ')[1]}</div>
         {
           monthDays.map((day, index) => {
             return <Day editPixel={this.props.editPixel} key={index} date={day.dayDate} userMoods={this.props.userMoods} pixelMoods={day.mood} />

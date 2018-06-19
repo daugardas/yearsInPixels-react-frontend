@@ -81,7 +81,7 @@
 }
 
 .day-number {
-  font-size: var(--pixel-grid-fontSize);
+  font-size: var(--day-number-fontSize);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -91,7 +91,7 @@
 
 .days {
   display: grid;
-  grid-auto-rows: var( --pixel-size);
+  grid-auto-rows: var(--pixel-size);
 }
 
 .add-icon {
@@ -147,7 +147,7 @@
 
 .new-emotion select {
   width: 100%;
-  font-size: var(--pixel-grid-fontSize);
+  font-size: var(--new-emotion-fontSize);
   border: 2px solid var(--lightBlue);
   border-radius: 8px;
   color: var(--blue);

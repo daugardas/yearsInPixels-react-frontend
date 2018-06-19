@@ -4,10 +4,12 @@
   margin: 0;
   padding: 0;
   outline: none;
+  --new-emotion-fontSize: 24px;
+  --day-number-fontSize: 24px;
   --pixel-size: 30px;
   --day-pixel-size: 28px;
   --day-inline-border-size: 24px;
-  --pixel-grid-fontSize: 24px;
+  --pixel-grid-fontSize: 20px;
   --nav-item-fontSize: 45px;
   --pixel-grid-marginLeft: 120px;
   --green: #73E673;
