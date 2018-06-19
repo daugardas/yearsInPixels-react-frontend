@@ -19,5 +19,6 @@ A web-app (maybe later on android and ios) project I made in my free time.
 - [ ] Clicking a color square gives u the option to change the color, but nothing changes, as you have to click " edit " before. So that function is just a waste of time. Same to edit the names of the emotions. How about you delete the " edit " at all, and clicking a square lets u change it already? And same for name, so u can click it already without picking " edit " first. You should still leave " confirm " there after some changes have been made. 
 - [ ] Implement 'selected too dark color' thing, because of the Black box + text = not visible text unless you select it thing
 - [ ] Sort emotions in a pixel day according to their percentage
+- [ ] Refresh background canvas, when day info is updated in Pixels tab
 
 ###### Huge credits to that latvian friend, who helps me with UX a lot
