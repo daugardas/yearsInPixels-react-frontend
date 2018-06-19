@@ -37,8 +37,8 @@ class App extends Component {
   render() {
     const routes = this.state.loggedIn ? (
       <Switch>
-        <Route exact path='/login' render={() => <Redirect to='/' />} />
-        <Route exact path='/register' render={() => <Redirect to='/' />} />
+        <Route exact path='/login' render={() => <Redirect to='/pixels' />} />
+        <Route exact path='/register' render={() => <Redirect to='/pixels' />} />
         <Route exact path='/profile' render={() => {
           return <User
             username={this.state.username}
@@ -76,7 +76,7 @@ class App extends Component {
             removeMessages={this.removeMessages}
             resizeBackground={this.resizeBackground} />
         )} />
-        <Route render={() => <Redirect to="/" />} />
+        <Route render={() => <Redirect to="/pixels" />} />
       </Switch>
     ) : (
         <Switch>
