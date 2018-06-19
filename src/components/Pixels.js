@@ -173,7 +173,8 @@ class NewPixel extends Component {
                       userMoods.map((mood, userIndex) => <option key={`option-${userIndex}`} value={mood.moodID}>{mood.moodName}</option>)
                     }
                   </select>
-                  <input type="range" id={`emotions-range-${moodIndex}`} value={this.state.emotions[moodIndex].percentage} onChange={this.handleInputRangeChange.bind(this, moodIndex, mood.moodId)} min="0" max="100" />
+                  { this.state.emotions.length > 1 ? <input type="range" id={`emotions-range-${moodIndex}`} value={this.state.emotions[moodIndex].percentage} onChange={this.handleInputRangeChange.bind(this, moodIndex, mood.moodId)} min="0" max="100" />:null }
+                  
                 </div>
                 {this.state.emotions.length > 1 ? <i className="fas fa-trash-alt mood-remove" onClick={this.handleRemoveEmotion.bind(this, moodIndex)} /> : null}
               </div>
