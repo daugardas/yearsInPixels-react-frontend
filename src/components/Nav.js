@@ -7,9 +7,9 @@ export class Nav extends Component {
     const userNav = this.props.logged ? (
       <nav>
         <NavLink activeClassName="nav-active" to='/profile' className="nav-item">{this.props.username}</NavLink>
-        <NavLink activeClassName="nav-active" to="/logout" className="nav-item">Log out</NavLink>
         <NavLink activeClassName="nav-active" to="/pixels" className="nav-item">Pixels</NavLink>
         <NavLink exact activeClassName="nav-active" to="/" className="nav-item">About</NavLink>
+        <NavLink activeClassName="nav-active" to="/logout" className="nav-item">Log out</NavLink>
       </nav>
     ) : (
         <nav>
