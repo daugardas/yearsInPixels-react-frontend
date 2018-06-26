@@ -15,5 +15,7 @@ A web-app (maybe later on android and ios) project I made in my free time.
 - [ ] Implement 'selected too dark color' thing, because of the Black box + text = not visible text unless you select it thing
 - [ ] Sort emotions in a pixel day according to their percentage
 - [ ] Fix BrowserRouter to work on github pages
+- [ ] Implement Redux
+- [ ] Change stylesheets files to css-in-js styles
 
 ###### Huge credits to that latvian friend, who helps me with UX a lot
