@@ -5,6 +5,7 @@ A web-app (maybe later on android and ios) project I made in my free time.
 ### To-do list
 
 - [ ] Fix bug: canceling pixel editing, shows no emotions
+- [ ] Make web-app mobile-responsive
 - [ ] Emphasize Pixels tab
 - [ ] Create graphs page
 - [ ] Implement 'cant remove pixel, cause it is part of some day emotions' thing in the server
