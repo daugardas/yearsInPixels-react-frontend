@@ -1,33 +1,145 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import injectSheet from 'react-jss';
+
 import Loader from './Loader';
 
-export class Login extends Component {
+const styles = {
+  container: {
+    display: `block`,
+    margin: `auto`,
+    position: `absolute`,
+    width: `auto`,
+    top: `50%`,
+    left: `50%`,
+    transform: `translate(-50%, -50%)`,
+    height: `auto`,
+    '& form': {
+      display: 'flex',
+      flexDirection: 'column'
+    }
+  },
+  inputContainer: {
+    width: `auto`,
+    margin: `12px 0`,
+    '& label': {
+      fontSize: `35px`,
+      color: `#364d6b`
+    }
+  },
+  input: {
+    fontFamily: `Indie Flower, cursive`,
+    float: `right`,
+    fontSize: `22px`,
+    marginLeft: `20px`,
+    background: `#f3fbff`,
+    width: `290px`,
+    borderRadius: `25px`,
+    border: ` 1px solid #d8efff`,
+    padding: ` 5px 10px 5px 15px`,
+    lineHeight: `35px`,
+    caretColor: `#a1d2ff`,
+    transition: `box-shadow 0.5s ease`,
+    '&:focus': {
+      boxShadow: `0px 0px 0px 2px #a9dbff`
+    }
+  },
+  inputPass: {
+    fontFamily: `Indie Flower, cursive`,
+    float: `right`,
+    marginLeft: `20px`,
+    background: `#f3fbff`,
+    borderRadius: `25px`,
+    border: ` 1px solid #d8efff`,
+    padding: ` 5px 10px 5px 15px`,
+    lineHeight: `35px`,
+    borderTopRightRadius: `0`,
+    borderBottomRightRadius: `0`,
+    fontSize: `16px`,
+    width: `249px`,
+    caretColor: `#a1d2ff`,
+    transition: `box-shadow 0.5s ease`,
+    '&:focus': {
+      boxShadow: `0px 0px 0px 2px #a9dbff`
+    }
+  },
+  iconContainer: {
+    display: `flex`,
+    float: `right`,
+    width: `40px`,
+    height: `45.5px`,
+    background: `#f3fbff`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    border: `1px solid #d8efff`,
+    borderRadius: `25px`,
+    borderTopLeftRadius: `0`,
+    borderBottomLeftRadius: `0`,
+    '& i': {
+      cursor: `pointer`,
+      margin: `0 10px`,
+      color: `#83a2c7`,
+      transition: `color 0.2s ease`,
+    },
+    '& i:hover': {
+      color: `#00060e`
+    }
+  },
+  forgot: {
+    display: `flex`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    marginTop: `10px`,
+    '& a': {
+      fontSize: `20px`,
+      textDecoration: `none`
+    }
+  },
+  button: {
+    padding: `10px`,
+    width: `130px`,
+    backgroundColor: `#eef9ff`,
+    fontSize: `25px`,
+    margin: `0 10px`,
+    border: `5px solid #dbf0ff`,
+    borderRadius: `30px`,
+    transition: `font - weight 0.3s ease, transform 0.3s ease, color 0.3s ease`,
+    alignSelf: `center`,
+    '&:hover': {
+      fontWeight: `700`,
+      cursor: `pointer`,
+      transform: `scale(1.02)`
+    }
+  }
+};
+
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = { loading: false };
     this.login = this.login.bind(this);
   }
   render() {
+    const { classes } = this.props;
     const form = this.state.loading ? <Loader /> : (
       <form method="post">
-        <div className="input-wrap">
+        <div className={classes.inputContainer}>
           <label htmlFor="username">Username:</label>
-          <input required id="username" className="input" name="username" type="text" />
+          <input required id="username" className={classes.input} name="username" type="text" />
         </div>
-        <div className="input-wrap">
+        <div className={classes.inputContainer}>
           <label htmlFor="password">Password:</label>
-          <div className="icon-wrap">
+          <div className={classes.iconContainer}>
             <i id="pass-icon" className="fas fa-eye-slash hide" onClick={this.showPass}></i>
           </div>
-          <input required className="input pass" type="password" name="password" id="password" />
+          <input required className={classes.inputPass} type="password" name="password" id="password" />
         </div>
-        <button type="submit" onClick={this.login} className="submit-button">Login</button>
-        <div className="forgot-pass"><NavLink to="/forgot">Forgot your password?</NavLink></div>
+        <button type="submit" onClick={this.login} className={classes.button}>Login</button>
+        <div className={classes.forgot}><NavLink to="/forgot">Forgot your password?</NavLink></div>
       </form>
     );
     return (
-      <div className="form-wrapper">
+      <div className={classes.container}>
         {form}
       </div>
     );
@@ -57,7 +169,7 @@ export class Login extends Component {
             document.cookie = `userID=${response.data.id}`;
             document.cookie = `userCreated=${response.data.dateCreated}`;
             document.cookie = `userEmail=${response.data.email}`;
-            this.props.messages.push({text: "Succesfully logged in!", type: "message"});
+            this.props.messages.push({ text: "Succesfully logged in!", type: "message" });
             this.props.renderMessages();
             this.setState({ loading: false });
             this.props.login();
@@ -65,8 +177,8 @@ export class Login extends Component {
             let response = JSON.parse(httpRequest.responseText);
             if (response.hasOwnProperty('errors')) {
               response.errors.map(err => this.props.messages.push({ text: err, type: "error" }));
-            } else if(response.hasOwnProperty('error')){
-              this.props.messages.push({text: response.error, type: "error"});
+            } else if (response.hasOwnProperty('error')) {
+              this.props.messages.push({ text: response.error, type: "error" });
             } else {
               this.props.messages.push({ text: response.message, type: "error" })
             }
@@ -104,3 +216,5 @@ export class Login extends Component {
     this.props.resizeBackground();
   }
 }
+
+export default injectSheet(styles)(Login);

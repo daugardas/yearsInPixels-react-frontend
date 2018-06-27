@@ -1,8 +1,109 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import injectSheet from 'react-jss';
+
 import Loader from './Loader';
 
-export class Reset extends Component {
+const styles = {
+  container: {
+    display: `block`,
+    margin: `auto`,
+    position: `absolute`,
+    width: `auto`,
+    top: `50%`,
+    left: `50%`,
+    transform: `translate(-50%, -50%)`,
+    height: `auto`,
+    '& form': {
+      display: `flex`,
+      flexDirection: `column`
+    }
+  },
+  inputContainer: {
+    width: `auto`,
+    margin: `12px 0`,
+    '& label': {
+      fontSize: `35px`,
+      color: `#364d6b`
+    }
+  },
+  iconContainer: {
+    display: `flex`,
+    float: `right`,
+    width: `40px`,
+    height: `45.5px`,
+    background: `#f3fbff`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    border: `1px solid #d8efff`,
+    borderRadius: `25px`,
+    borderTopLeftRadius: `0`,
+    borderBottomLeftRadius: `0`,
+    '& i': {
+      cursor: `pointer`,
+      margin: `0 10px`,
+      color: `#83a2c7`,
+      transition: `color 0.2s ease`,
+    },
+    '& i:hover': {
+      color: `#00060e`
+    }
+  },
+  inputPass: {
+    fontFamily: `Indie Flower, cursive`,
+    float: `right`,
+    marginLeft: `20px`,
+    background: `#f3fbff`,
+    borderRadius: `25px`,
+    border: ` 1px solid #d8efff`,
+    padding: ` 5px 10px 5px 15px`,
+    lineHeight: `35px`,
+    borderTopRightRadius: `0`,
+    borderBottomRightRadius: `0`,
+    fontSize: `16px`,
+    width: `249px`,
+    caretColor: `#a1d2ff`,
+    transition: `box-shadow 0.5s ease`,
+    '&:focus': {
+      boxShadow: `0px 0px 0px 2px #a9dbff`
+    }
+  },
+  button: {
+    padding: `10px`,
+    width: `130px`,
+    backgroundColor: `#eef9ff`,
+    fontSize: `25px`,
+    margin: `0 10px`,
+    border: `5px solid #dbf0ff`,
+    borderRadius: `30px`,
+    transition: `font - weight 0.3s ease, transform 0.3s ease, color 0.3s ease`,
+    alignSelf: `center`,
+    '&:hover': {
+      fontWeight: `700`,
+      cursor: `pointer`,
+      transform: `scale(1.02)`
+    }
+  },
+  input: {
+    fontFamily: `'Indie Flower', cursive`,
+    float: `right`,
+    fontSize: `22px`,
+    marginLeft: `20px`,
+    background: `#f3fbff`,
+    width: `290px`,
+    borderRadius: `25px`,
+    border: `1px solid #d8efff`,
+    padding: `5px 10px 5px 15px`,
+    lineHeight: `35px`,
+    caretColor: `#a1d2ff`,
+    transition: `box-shadow 0.5s ease`,
+    '&:focus': {
+      boxShadow: `0px 0px 0px 2px #a9dbff`
+    }
+  }
+};
+
+class Reset extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,31 +118,32 @@ export class Reset extends Component {
     this.recover = this.recover.bind(this);
   }
   render() {
+    const { classes } = this.props;
     const form = this.state.loading ? <Loader /> : (
       <form method="post">
-        <div className="input-wrap">
+        <div className={classes.inputContainer}>
           <label htmlFor="username">Username:</label>
-          <input id="username" className="input" name="username" type="text" value={this.state.username} readOnly />
+          <input id="username" className={classes.input} name="username" type="text" value={this.state.username} readOnly />
         </div>
-        <div className="input-wrap">
+        <div className={classes.inputContainer}>
           <label htmlFor="password">New password:</label>
-          <div className="icon-wrap">
+          <div className={classes.iconContainer}>
             <i id="pass-icon" className="fas fa-eye-slash hide" onClick={this.showPass}></i>
           </div>
-          <input required className="input pass" type="password" name="password" id="password" />
+          <input required className={classes.inputPass} type="password" name="password" id="password" />
         </div>
-        <div className="input-wrap">
+        <div className={classes.inputContainer}>
           <label htmlFor="conf-password">Confirm new password:</label>
-          <div className="icon-wrap">
+          <div className={classes.iconContainer}>
             <i id="conf-icon" className="fas fa-eye-slash hide" onClick={this.showConfPass}></i>
           </div>
-          <input required className="input pass" type="password" name="conf-password" id="conf-password" />
+          <input required className={classes.inputPass} type="password" name="conf-password" id="conf-password" />
         </div>
-        <button type="submit" onClick={this.recover} className="submit-button">Recover</button>
+        <button type="submit" onClick={this.recover} className={classes.button}>Recover</button>
       </form>
     );
     return (
-      <div className="form-wrapper">
+      <div className={classes.container}>
         {this.redirect()}
         {form}
       </div>
@@ -191,3 +293,5 @@ export class Reset extends Component {
     this.requestRecover();
   }
 }
+
+export default injectSheet(styles)(Reset);

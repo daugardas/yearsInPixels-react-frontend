@@ -1,273 +1,132 @@
 import React, { Component } from 'react';
+import injectSheet from 'react-jss';
 import Loader from './Loader';
-import './User.css';
 
-class Mood extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      removed: false,
-      edit: false,
-      moodName: this.props.mood.moodName,
-      moodColor: this.props.mood.moodColor
-    };
-    this.removeMood = this.removeMood.bind(this);
-    this.editMood = this.editMood.bind(this);
-    this.handleEditClick = this.handleEditClick.bind(this);
-    this.handleNameChange = this.handleNameChange.bind(this);
-    this.handleColorChange = this.handleColorChange.bind(this);
-  }
-  render() {
-    let mood = this.state.edit ? (
-      <div className="mood">
-        <input type="text" defaultValue={this.state.moodName} className="input mood-name-input" id="edit-mood-name-input" placeholder="Enter pixels name" onChange={this.handleNameChange} />
-        <input type="color" value={this.state.moodColor} className="mood-color-input" id="edit-mood-color-input" onChange={this.handleColorChange} />
-        <i className="fas fa-save save-mood" onClick={this.editMood}></i>
-        <i className="fas fa-times cancel-save-mood" onClick={this.handleEditClick}></i>
-      </div>
-    ) : (
-        <div className="mood">
-          <label className="mood-label" >{this.state.moodName}</label>
-          <input type="color" className="mood-color-input" value={this.state.moodColor} readOnly />
-          <i className="fas fa-edit mood-edit" onClick={this.handleEditClick}></i>
-          <i className="fas fa-trash-alt mood-remove" onClick={this.removeMood}></i>
-        </div>
-      );
-    let element = this.state.removed ? null : mood;
-    return element;
-  }
-  handleEditClick() {
-    this.setState({ edit: !this.state.edit })
-  }
-  handleNameChange(event) {
-    this.setState({ moodName: event.target.value });
-  }
-  handleColorChange(event) {
-    this.setState({ moodColor: event.target.value });
-  }
-  removeMood() {
-    this.setState({ removed: true });
-    // eslint-disable-next-line
-    let token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-    let httpRequest = new XMLHttpRequest();
-    let remove = {
-      moodID: this.props.mood.moodID
-    };
-    httpRequest.open('DELETE', `https://api.yearsinpixels.com/api/user/mood`, true);
-    httpRequest.setRequestHeader("Content-Type", "application/json");
-    httpRequest.setRequestHeader("x-access-token", token);
-    httpRequest.send(JSON.stringify(remove));
-    httpRequest.onreadystatechange = () => {
-      try {
-        if (httpRequest.readyState === XMLHttpRequest.DONE) {
-          if (httpRequest.status === 200) {
-            // do nothing
-          } else {
-            let response = JSON.parse(httpRequest.responseText);
-            if (response.hasOwnProperty('error')) {
-              this.props.messages.push({ text: response.error, type: 'error' });
-            } else {
-              this.props.messages.push({ text: response.message, type: "error" })
-            }
-            this.setState({ removed: false });
-          }
-          this.props.renderMessages();
-        }
-      } catch (e) {
-        console.error(`Caught error: `, e);
-        this.props.messages.push({ text: e, type: "error" });
-        this.props.renderMessages();
-      }
-    }
-  }
-  editMood() {
-    document.getElementById('messages').innerHTML = '';
-    let makeRequest = true;
-    if (this.state.moodName === '') {
-      makeRequest = false;
-      document.getElementById('edit-mood-name-input').setCustomValidity("Enter pixels name!");
-      this.props.messages.push({ text: "Please enter pixels name", type: "error" });
-    } else if (this.state.moodName.length > 50) {
-      makeRequest = false;
-      document.getElementById('edit-mood-name-input').setCustomValidity(`Pixels name can't be longer than 50 characters!`);
-      this.props.messages.push({ text: `Pixels name can't be longer than 50 characters!`, type: "error" });
-    }
-    if (makeRequest) {
-      // eslint-disable-next-line
-      let token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-      let httpRequest = new XMLHttpRequest();
-      let mood = {
-        moodName: this.state.moodName,
-        moodColor: this.state.moodColor,
-        moodID: this.props.mood.moodID
-      };
-      httpRequest.open('PUT', `https://api.yearsinpixels.com/api/user/mood`, true);
-      httpRequest.setRequestHeader("Content-Type", "application/json");
-      httpRequest.setRequestHeader("x-access-token", token);
-      httpRequest.send(JSON.stringify(mood));
-      httpRequest.onreadystatechange = () => {
-        try {
-          if (httpRequest.readyState === XMLHttpRequest.DONE) {
-            if (httpRequest.status === 200) {
-              this.setState({
-                edit: false,
-              })
-            } else {
-              let response = JSON.parse(httpRequest.responseText);
-              if (response.hasOwnProperty('errors')) {
-                response.errors.map(err => this.props.messages.push({ text: err, type: "error" }));
-              } else if (response.hasOwnProperty('error')) {
-                this.props.messages.push({ text: response.error, type: 'error' });
-              } else {
-                this.props.messages.push({ text: response.message, type: "error" })
-              }
-            }
-            this.props.renderMessages();
-          }
-        } catch (e) {
-          console.error(`Caught error: `, e);
-          this.props.messages.push({ text: e, type: "error" });
-          this.props.renderMessages();
-        }
-      }
-    } else {
-      this.props.renderMessages();
-    }
-  }
-}
-class AddMood extends Component {
-  constructor(props) {
-    super(props);
-    this.addMood = this.addMood.bind(this);
-  }
-  render() {
-    return (
-      <div className="mood mood-form">
-        <input type="text" className="input mood-name-input" id="mood-name-input" placeholder="Enter pixel name" />
-        <input type="color" className="mood-color-input" id="mood-color-input" />
-        <button type="submit" className="mood-add-button" onClick={this.addMood}>Add</button>
-      </div>
-    );
-  }
-  addMood() {
-    document.getElementById('messages').innerHTML = '';
-    let moodName = document.getElementById('mood-name-input').value;
-    let moodColor = document.getElementById('mood-color-input').value;
-    let makeRequest = true;
-    if (moodName === '') {
-      makeRequest = false;
-      document.getElementById('mood-name-input').setCustomValidity("Enter mood name!");
-      this.props.messages.push({ text: "Please enter a mood name", type: "error" });
-    } else if (moodName.length > 50) {
-      makeRequest = false;
-      document.getElementById('mood-name-input').setCustomValidity(`Mood name can't be longer than 50 characters!`);
-      this.props.messages.push({ text: `Mood name can't be longer than 50 characters!`, type: "error" });
-    }
-    if (makeRequest) {
-      document.getElementById('mood-name-input').value = '';
-      // eslint-disable-next-line
-      let token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-      let httpRequest = new XMLHttpRequest();
-      let mood = {
-        moodName: moodName,
-        moodColor: moodColor
-      };
+import AppSettings from './User/AppSettings';
 
-      httpRequest.open('POST', `https://api.yearsinpixels.com/api/user/mood`, true);
-      httpRequest.setRequestHeader("Content-Type", "application/json");
-      httpRequest.setRequestHeader("x-access-token", token);
-      httpRequest.send(JSON.stringify(mood));
-      httpRequest.onreadystatechange = () => {
-        try {
-          if (httpRequest.readyState === XMLHttpRequest.DONE) {
-            if (httpRequest.status === 200) {
-              this.props.getMoods();
-            } else {
-              let response = JSON.parse(httpRequest.responseText);
-              if (response.hasOwnProperty('errors')) {
-                response.errors.map(err => this.props.messages.push({ text: err, type: "error" }));
-              } else if (response.hasOwnProperty('error')) {
-                this.props.messages.push({ text: response.error, type: 'error' });
-              } else {
-                this.props.messages.push({ text: response.message, type: "error" })
-              }
-            }
-            this.props.renderMessages();
-          }
-        } catch (e) {
-          console.error(`Caught error: `, e);
-          this.props.messages.push({ text: e, type: "error" });
-          this.props.renderMessages();
-        }
-      }
-    } else {
-      this.props.renderMessages();
+const styles = {
+  container: {
+    display: `flex`,
+    width: `100%`,
+    justifyContent: `space-evenly`,
+    flexDirection: `row`,
+    marginTop: `50px`
+  },
+  profileSettingsContainer: {
+    display: `flex`,
+    width: `auto`,
+    height: `auto`,
+    '& form': {
+      display: `flex`,
+      flexDirection: `column`
     }
-  }
-}
-class AppSettings extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      moods: undefined
+  },
+  inputContainer: {
+    width: `auto`,
+    margin: `12px 0`,
+    '& label': {
+      fontSize: `35px`,
+      color: `#364d6b`
     }
-    this.getMoods = this.getMoods.bind(this);
-  }
-  render() {
-    return (
-      <div className="app-settings-wrap">
-        <div className="moods-label"><span className="label">Pixels</span></div>
-        <div className="moods" id="moods">
-          {this.state.moods}
-          <AddMood getMoods={this.getMoods} messages={this.props.messages}
-            renderMessages={this.props.renderMessages} />
-        </div>
-      </div>
-    );
-  }
-  componentDidMount() {
-    this.getMoods();
-  }
-  getMoods() {
-    // eslint-disable-next-line
-    let token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-    if (token) {
-      let httpRequest = new XMLHttpRequest();
-      httpRequest.open('GET', `https://api.yearsinpixels.com/api/user/mood`, true);
-      httpRequest.setRequestHeader("x-access-token", `${token}`);
-      httpRequest.send();
-      httpRequest.onreadystatechange = () => {
-        try {
-          if (httpRequest.readyState === XMLHttpRequest.DONE) {
-            if (httpRequest.status === 200) {
-              let response = JSON.parse(httpRequest.responseText);
-              let moods = response.moods.map(mood => (
-                <Mood mood={mood} key={mood.moodID} messages={this.props.messages}
-                  renderMessages={this.props.renderMessages} />
-              ));
-              this.setState({
-                moods: moods
-              });
-            } else {
-              let response = JSON.parse(httpRequest.responseText);
-              if (response.hasOwnProperty('errors')) {
-                response.errors.map(err => this.props.messages.push({ text: err, type: "error" }));
-              } else {
-                this.props.messages.push({ text: response.message, type: "error" })
-              }
-              this.props.renderMessages();
-            }
-          }
-        } catch (e) {
-          console.error(`Caught error: `, e);
-          this.props.messages.push({ text: e, type: "error" });
-          this.props.renderMessages();
-        }
-      }
+  },
+  date: {
+    float: `right`,
+    fontSize: `35px`,
+    color: `#364d6b`
+  },
+  iconContainer: {
+    display: `flex`,
+    float: `right`,
+    width: `40px`,
+    height: `45.5px`,
+    background: `#f3fbff`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    border: `1px solid #d8efff`,
+    borderRadius: `25px`,
+    borderTopLeftRadius: `0`,
+    borderBottomLeftRadius: `0`,
+    '& i': {
+      cursor: `pointer`,
+      margin: `0 10px`,
+      color: `#83a2c7`,
+      transition: `color 0.2s ease`,
+    },
+    '& i:hover': {
+      color: `#00060e`
     }
+  },
+  inputPass: {
+    fontFamily: `Indie Flower, cursive`,
+    float: `right`,
+    marginLeft: `20px`,
+    background: `#f3fbff`,
+    borderRadius: `25px`,
+    border: ` 1px solid #d8efff`,
+    padding: ` 5px 10px 5px 15px`,
+    lineHeight: `35px`,
+    borderTopRightRadius: `0`,
+    borderBottomRightRadius: `0`,
+    fontSize: `16px`,
+    width: `249px`,
+    caretColor: `#a1d2ff`,
+    transition: `box-shadow 0.5s ease`,
+    '&:focus': {
+      boxShadow: `0px 0px 0px 2px #a9dbff`
+    }
+  },
+  buttonsContainer: {
+    display: `flex`,
+    alignItems: `center`,
+    justifyContent: `center`
+  },
+  submitButton: {
+    padding: `10px`,
+    width: `130px`,
+    backgroundColor: `#eef9ff`,
+    fontSize: `25px`,
+    margin: `0 10px`,
+    border: `5px solid #dbf0ff`,
+    borderRadius: `30px`,
+    transition: `font - weight 0.3s ease, transform 0.3s ease, color 0.3s ease`,
+    alignSelf: `center`,
+    '&:hover': {
+      fontWeight: `700`,
+      cursor: `pointer`,
+      transform: `scale(1.02)`
+    }
+  },
+  input: {
+    fontFamily: `'Indie Flower', cursive`,
+    float: `right`,
+    fontSize: `22px`,
+    marginLeft: `20px`,
+    background: `#f3fbff`,
+    width: `290px`,
+    borderRadius: `25px`,
+    border: `1px solid #d8efff`,
+    padding: `5px 10px 5px 15px`,
+    lineHeight: `35px`,
+    caretColor: `#a1d2ff`,
+    transition: `box-shadow 0.5s ease`,
+    '&:focus': {
+      boxShadow: `0px 0px 0px 2px #a9dbff`
+    }
+  },
+  deleteButton: {
+    padding: `10px`,
+    width: `170px`,
+    background: `#ffb3b3`,
+    fontSize: `25px`,
+    margin: ` 0 10px`,
+    border: `5px solid #ff8e8e`,
+    borderRadius: `30px`,
+    transition: `font-weight 0.3s ease, transform 0.3s ease, color 0.3s ease`,
+    alignSelf: `center`,
   }
-}
-export class User extends Component {
+};
+
+class User extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -279,50 +138,52 @@ export class User extends Component {
     this.deleteUser = this.deleteUser.bind(this);
   }
   render() {
+    const { classes } = this.props;
     let userProfileSettings = (
-      <div className="profile-wrap">
+      <div className={classes.profileSettingsContainer}>
         <form method="post">
-          <div className="label">Profile created:
-            <span className="profile-date"> {this.formatedDate}</span>
+          <div className={classes.inputContainer}>
+            <label>Profile created:</label>
+            <span className={classes.date}> {this.formatedDate}</span>
           </div>
-          <div className="input-wrap">
+          <div className={classes.inputContainer}>
             <label htmlFor="username">Username:</label>
-            <input id="new-username" className="input" name="username" type="text" defaultValue={this.props.username} />
+            <input id="new-username" className={classes.input} name="username" type="text" defaultValue={this.props.username} />
           </div>
-          <div className="input-wrap">
+          <div className={classes.inputContainer}>
             <label htmlFor="email">Email:</label>
-            <input id="new-email" className="input" name="email" type="email" defaultValue={this.props.userEmail} />
+            <input id="new-email" className={classes.input} name="email" type="email" defaultValue={this.props.userEmail} />
           </div>
-          <div className="input-wrap">
+          <div className={classes.inputContainer}>
             <label htmlFor="password">New password:</label>
-            <div className="icon-wrap">
+            <div className={classes.iconContainer}>
               <i id="pass-icon" className="fas fa-eye-slash hide" onClick={this.showPass}></i>
             </div>
-            <input className="input pass" type="password" name="password" id="new-password" defaultValue="" />
+            <input className={classes.inputPass} type="password" name="password" id="new-password" defaultValue="" />
           </div>
-          <div className="input-wrap">
+          <div className={classes.inputContainer}>
             <label htmlFor="conf-password">Confirm new password:</label>
-            <div className="icon-wrap">
+            <div className={classes.iconContainer}>
               <i id="conf-icon" className="fas fa-eye-slash hide" onClick={this.showConfPass}></i>
             </div>
-            <input className="input pass" type="password" name="conf-password" id="conf-new-password" defaultValue="" />
+            <input className={classes.inputPass} type="password" name="conf-password" id="conf-new-password" defaultValue="" />
           </div>
-          <div className="input-wrap">
+          <div className={classes.inputContainer}>
             <label htmlFor="old-password">Current password:</label>
-            <div className="icon-wrap">
+            <div className={classes.iconContainer}>
               <i id="conf-icon" className="fas fa-eye-slash hide" onClick={this.showOldPass}></i>
             </div>
-            <input required className="input pass" type="password" name="old-password" id="old-password" defaultValue="" />
+            <input required className={classes.inputPass} type="password" name="old-password" id="old-password" defaultValue="" />
           </div>
-          <div className="button-wrap">
-            <button type="submit" onClick={this.deleteUser} className="deleteUser-button">Delete account</button>
-            <button type="submit" onClick={this.updateUser} className="submit-button">Update</button>
+          <div className={classes.buttonsContainer}>
+            <button type="submit" onClick={this.deleteUser} className={classes.deleteButton}>Delete account</button>
+            <button type="submit" onClick={this.updateUser} className={classes.submitButton}>Update</button>
           </div>
         </form>
       </div>
     );
     return this.state.loading ? (<Loader />) : (
-      <div className="settings-wrap">
+      <div className={classes.container}>
         {userProfileSettings}
         <AppSettings messages={this.props.messages}
           renderMessages={this.props.renderMessages} />
@@ -565,3 +426,5 @@ export class User extends Component {
     return formatString.replace("#hhhh#", hhhh).replace("#mm#", mm);
   };
 }
+
+export default injectSheet(styles)(User);

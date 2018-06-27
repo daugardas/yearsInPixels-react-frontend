@@ -1,18 +1,48 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
+import injectSheet from 'react-jss';
+
 import './App.css';
-import { Footer } from './components/Footer';
-import { Logout } from './components/Logout';
-import { Nav } from './components/Nav';
-import { User } from './components/User';
-import { Pixels } from './components/Pixels';
-import { Login } from './components/Login';
-import { Register } from './components/Register';
-import { About } from './components/About';
-import { ForgotPassword } from './components/ForgotPassword';
-import { Reset } from './components/Reset';
+import Footer from './components/Footer';
+import Logout from './components/Logout';
+import Nav from './components/Nav';
+import User from './components/User';
+import Pixels from './components/Pixels';
+import Login from './components/Login';
+import Register from './components/Register';
+import About from './components/About';
+import ForgotPassword from './components/ForgotPassword';
+import Reset from './components/Reset';
 import Loader from './components/Loader';
 import BackgroundCanvas from './components/BackgroundCanvas';
+
+const styles = {
+  messages: {
+    display: `flex`,
+    width: `500px`,
+    flexDirection: `column-reverse`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    position: `fixed`,
+    left: `50%`,
+    transform: `translateX(-50%)`,
+    bottom: `0`,
+    zIndex: `999`,
+    marginTop: `17px`
+  },
+  message: { 
+    fontSize: `22px`,
+    fontWeight: `bold`,
+    padding: `10px 50px`,
+    width: `100%`
+  },
+  error: {
+    background: `#ff7e7e`
+  },
+  success: {
+    background: `#83ff83`
+  }
+}
 
 class App extends Component {
   constructor(props) {
@@ -35,6 +65,7 @@ class App extends Component {
     this.messages = [];
   }
   render() {
+    const { classes } = this.props;
     const routes = this.state.loggedIn ? (
       <Switch>
         <Route exact path='/login' render={() => <Redirect to='/pixels' />} />
@@ -126,10 +157,10 @@ class App extends Component {
     const appBody = this.state.loading ? <Loader /> : routes;
     return (
       <div id="App">
-        <BackgroundCanvas ref={instance => this.backgroundCanvas = instance} />
+        <BackgroundCanvas innerRef={(ref) => this.backgroundCanvas = ref} />
         <Nav username={this.state.username} logged={this.state.loggedIn} />
         {appBody}
-        <div id="messages" className="messages"></div>
+        <div id="messages" className={classes.messages}></div>
         <Footer />
       </div>
     );
@@ -192,7 +223,7 @@ class App extends Component {
                 });
               } else {
                 let response = JSON.parse(httpRequest.responseText);
-                this.messages.push({text: response.error, type: "error"})
+                this.messages.push({ text: response.error, type: "error" })
                 this.renderMessages();
               }
             } else {
@@ -214,15 +245,16 @@ class App extends Component {
     }
   }
   renderMessages() {
+    const {classes} = this.props;
     let messagesEl = document.getElementById('messages');
     for (let i = 0; i < this.messages.length; i++) {
       let message = document.createElement("div");
-      message.classList.add("message");
+      message.classList.add(classes.message);
       message.innerHTML = this.messages[i].text;
       if (this.messages[i].type === "error") {
-        message.classList.add("message-error");
+        message.classList.add(classes.error);
       } else {
-        message.classList.add('message-success');
+        message.classList.add(classes.success);
       }
       messagesEl.appendChild(message);
     }
@@ -266,4 +298,4 @@ class App extends Component {
     this.backgroundCanvas.resize();
   }
 }
-export default App;
+export default injectSheet(styles)(App);

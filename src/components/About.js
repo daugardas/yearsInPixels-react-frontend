@@ -1,13 +1,44 @@
 import React, { Component } from 'react';
-import './About.css';
-export class About extends Component {
+import injectSheet from 'react-jss';
+const styles = {
+  container: {
+    display: 'flex',
+    width: 600,
+    alignItems: `center`,
+    justifyContent: `center`,
+    flexDirection: `column`,
+    margin: {
+      top: 0,
+      right: `auto`,
+      bottom: 0,
+      left: `auto`
+    },
+    padding: 30
+  },
+  header: {
+    fontSize: 50,
+    color: `#4b5b66`
+  },
+  paragraph: {
+    fontSize: 20,
+    color: `#4b5b66`,
+    lineHeight: `35px`,
+    fontFamily: `Indie Flower, cursive !important`,
+    '& a': {
+      fontFamily: `Indie Flower, cursive !important`
+    }
+  }
+}
+
+class About extends Component {
   render(){
+    const { classes } = this.props;
     return(
-      <div className="about-container">
-        <h1 className="para-title">A Year In Pixels</h1>
-        <p className="about-paragraph font-flower">
+      <div className={classes.container}>
+        <h1 className={classes.header}>A Year In Pixels</h1>
+        <p className={classes.paragraph}>
           The Year in Pixels chart was created by Camille or <span> </span>
-          <a className="font-flower about-link" target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/passioncarnets/">@passioncarnets</a> on Instagram,
+          <a target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/passioncarnets/">@passioncarnets</a> on Instagram,
            and she has written a bit about how it came to be here. While the scale of this mood tracker is large, 
            the concept is deceptively simple. 
            I already set up your own chart, with twelve columns for each months of your selected year. 
@@ -15,8 +46,8 @@ export class About extends Component {
            <br/>
            You also get your own personal key, I included a default one, which you can edit however you want to!
         </p>
-        <h1 className="para-title">The ultimate mood tracker</h1>
-        <p className="about-paragraph font-flower">
+        <h1 className={classes.header}>The ultimate mood tracker</h1>
+        <p className={classes.paragraph}>
           You might be wondering why you would want to keep a mood tracker like A Year in Pixels. 
           Well, there are a few reasons that you might benefit:
           <br/>
@@ -33,9 +64,9 @@ export class About extends Component {
           you can take extra care of yourself during those down times. 
           Or you can plan a day trip to lift your spirits, get away, or grab some precious alone time.
         </p>
-        <h1 className="para-title">How this web app idea came to be</h1>
-        <p className="about-paragraph font-flower">
-          One day, while browsing <a className="font-flower" target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/">Reddit</a>, 
+        <h1 className={classes.header}>How this web app idea came to be</h1>
+        <p className={classes.paragraph}>
+          One day, while browsing <a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/">Reddit</a>, 
           I came across a post which mentioned Year In Pixels graph. 
           I thought that trying this might be a good idea, but knowing me, 
           I don't like to write things down in a notebook or something like that, 
@@ -52,3 +83,5 @@ export class About extends Component {
     this.props.resizeBackground();
   }
 }
+
+export default injectSheet(styles)(About)

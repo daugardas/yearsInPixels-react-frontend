@@ -1,6 +1,16 @@
 import React, { Component } from 'react';
+import injectSheet from 'react-jss';
 
-export default class BackgroundCanvas extends Component {
+const styles = {
+  canvas: {
+    position: `absolute`,
+    top: `0`,
+    left: `0`,
+    zIndex: `-100`
+  }
+};
+
+class BackgroundCanvas extends Component {
   constructor(props) {
     super(props);
     this.resize = this.resize.bind(this);
@@ -8,8 +18,9 @@ export default class BackgroundCanvas extends Component {
     this.lineSpace = 30;
   }
   render() {
+    const { classes } = this.props;
     return (
-      <canvas id="notebookCanvas"></canvas>
+      <canvas id="notebookCanvas" className={classes.canvas}></canvas>
     );
   }
   drawBackgroundLines = () => {
@@ -59,3 +70,5 @@ export default class BackgroundCanvas extends Component {
     this.ctx.fillRect(x, y, this.lineSpace, this.lineSpace);
   }
 }
+
+export default injectSheet(styles)(BackgroundCanvas);
