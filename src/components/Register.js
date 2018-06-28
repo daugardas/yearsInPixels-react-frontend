@@ -100,6 +100,9 @@ const styles = {
     '&:focus': {
       boxShadow: `0px 0px 0px 2px #a9dbff`
     }
+  },
+  recaptcha: {
+    alignSelf: 'center'
   }
 };
 
@@ -143,6 +146,7 @@ class Register extends Component {
             <input required className={classes.inputPass} type="password" name="conf-password" id="conf-password" />
           </div>
           <Recaptcha
+            className={classes.recaptcha}
             sitekey="6Lf1HFwUAAAAAAEIUqAnwrGrXJtqqL_ya6tPV7bS"
             verifyCallback={this.recaptchaVerify}
           />
