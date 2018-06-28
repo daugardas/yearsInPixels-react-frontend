@@ -88,7 +88,7 @@ const styles = {
     margin: `0 10px`,
     border: `5px solid #dbf0ff`,
     borderRadius: `30px`,
-    transition: `font - weight 0.3s ease, transform 0.3s ease, color 0.3s ease`,
+    transition: `font-weight 0.3s ease, transform 0.3s ease, color 0.3s ease`,
     alignSelf: `center`,
     '&:hover': {
       fontWeight: `700`,
