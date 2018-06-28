@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import injectSheet from 'react-jss';
 
-import './App.css';
+//import './App.css';
 import Footer from './components/Footer';
 import Logout from './components/Logout';
 import Nav from './components/Nav';
@@ -41,6 +41,10 @@ const styles = {
   },
   success: {
     background: `#83ff83`
+  },
+  '@keyframes fade-out': {
+    from: {opacity: 1},
+    to: {opacity: 0}
   }
 }
 
