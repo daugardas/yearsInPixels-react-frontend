@@ -159,8 +159,8 @@ class Register extends Component {
     this.setState({ captchaVerified: true, captchaToken: response });
   }
   register(e) {
+    const { createNotification } = this.props;
     e.preventDefault();
-    document.getElementById('messages').innerHTML = "";
     if (this.state.captchaVerified) {
       this.setState({ loading: true });
       this.username = document.getElementById('username').value;
@@ -170,42 +170,42 @@ class Register extends Component {
       let makeRequest = true;
       // validate email and passwords
       if (this.password !== this.confPassword) {
-        this.props.messages.push({ text: "Passwords do not match.", type: "error" })
         makeRequest = false;
+        createNotification('error', "Passwords do not match.")
         document.getElementById('password').setCustomValidity("Passwords do not match.")
         document.getElementById('conf-password').setCustomValidity("Passwords do not match.")
       }
       if (this.password.length < 8) {
         makeRequest = false;
-        this.props.messages.push({ text: `Minimum password length is 8 characters.`, type: "error" });
+        createNotification('error', "Minimum password length is 8 characters.")
         document.getElementById('password').setCustomValidity("Minimum password length is 8 characters.")
       } else if (this.password.length > 128) {
         makeRequest = false;
-        this.props.messages.push({ text: `Maximum password length is 128 characters.`, type: "error" });
+        createNotification('error', "Maximum password length is 128 characters.")
         document.getElementById('password').setCustomValidity("Maximum password length is 128 characters.")
       } else {
         let passwordRegExp = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))/g;
         if (!passwordRegExp.test(this.password)) {
           makeRequest = false;
+          createNotification('error', "Password must be least one lowercase letter and one number or one lowecase letter and uppercase letter.")
           document.getElementById('password').setCustomValidity("Password must be least one lowercase letter and one number or one lowecase letter and uppercase letter.")
-          this.props.messages.push({ text: `Password must be least one lowercase letter and one number or one lowecase letter and uppercase letter.`, type: "error" });
         }
       }
       // check email
       let emailRegEx = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (!emailRegEx.test(this.email)) {
         makeRequest = false;
-        this.props.messages.push({ text: 'Email adress is invalid.', type: "error" });
+        createNotification('error', "Email adress is invalid.")
         document.getElementById('email').setCustomValidity("Email adress is invalid.");
       }
       // check username
       if (this.username.length < 5) {
-        this.props.messages.push({ text: `Username must be higher than 5 characters.`, type: "error" });
+        createNotification('error', "Username must be higher than 5 characters.")
         document.getElementById('username').setCustomValidity("Username must be higher than 5 characters.");
         makeRequest = false;
       } else if (this.username.length > 35) {
         makeRequest = false;
-        this.props.messages.push({ text: `Username must be lower than 32 characters.`, type: "error" });
+        createNotification('error', "Username must be lower than 32 characters.")
         document.getElementById('username').setCustomValidity("Username must be lower than 32 characters.");
       }
       if (makeRequest) {
@@ -223,37 +223,32 @@ class Register extends Component {
           try {
             if (httpRequest.readyState === XMLHttpRequest.DONE) {
               if (httpRequest.status === 201) {
-                this.props.messages.push({ text: "Succesfully registered, now you can login!", type: "message" });
+                createNotification('success', "Succesfully registered, now you can login!");
               } else if (httpRequest.status === 429) {
                 let response = JSON.parse(httpRequest.responseText);
-                this.props.messages.push({ text: response.error, type: 'error' });
+                createNotification('error', response.error);
               } else {
                 let response = JSON.parse(httpRequest.responseText);
                 if (response.hasOwnProperty('errors')) {
-                  response.errors.map(err => this.props.messages.push({ text: err, type: "error" }));
+                  response.errors.map(err => console.log(err));
                 } else if (response.hasOwnProperty('error')) {
-                  this.props.messages.push({ text: response.error, type: "error" });
+                  console.log(response.error);
                 } else {
-                  this.props.messages.push({ text: response.message, type: "error" })
+                  console.log(response.message);
                 }
               }
-              this.props.renderMessages();
               this.setState({ loading: false });
             }
           } catch (e) {
             console.error(`Caught error: `, e);
-            this.props.messages.push({ text: e, type: "error" });
-            this.props.renderMessages();
             this.setState({ loading: false });
           }
         }
       } else {
-        this.props.renderMessages();
         this.setState({ loading: false });
       }
     } else {
-      this.props.messages.push({ text: "Verify that you're not a robot.", type: "error" });
-      this.props.renderMessages();
+      createNotification('error', "Verify that you're not a robot.");
       this.setState({ loading: false });
     }
   }
@@ -294,7 +289,6 @@ class Register extends Component {
     }
   }
   componentDidMount() {
-    this.props.removeMessages();
     this.props.resizeBackground();
   }
 }

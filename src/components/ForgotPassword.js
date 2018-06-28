@@ -87,6 +87,7 @@ export class ForgotPassword extends Component {
     );
   }
   forgot(e) {
+    const { createNotification } = this.props;
     e.preventDefault();
     this.setState({ loading: true });
     document.getElementById('messages').innerHTML = "";
@@ -112,34 +113,29 @@ export class ForgotPassword extends Component {
           if (httpRequest.readyState === XMLHttpRequest.DONE) {
             if (httpRequest.status === 200) {
               let response = JSON.parse(httpRequest.responseText);
-              this.props.messages.push({ text: response.message, type: "message" });
+              createNotification('success', response.message);
             } else {
               let response = JSON.parse(httpRequest.responseText);
               if (response.hasOwnProperty('errors')) {
-                response.errors.map(err => this.props.messages.push({ text: err, type: "error" }));
+                response.errors.map(err => createNotification('error', err));
               } else if (response.hasOwnProperty('error')) {
-                this.props.messages.push({ text: response.error, type: "error" })
+                createNotification('error', response.error)
               } else {
-                this.props.messages.push({ text: response.message, type: "error" })
+                createNotification('error', response.message)
               }
             }
             this.setState({ loading: false });
-            this.props.renderMessages();
           }
         } catch (e) {
           console.error(`Caught error: `, e);
-          this.props.messages.push({ text: e, type: "error" });
           this.setState({ loading: false });
-          this.props.renderMessages();
         }
       }
     } else {
       this.setState({ loading: false });
-      this.props.renderMessages();
     }
   }
   componentDidMount() {
-    this.props.removeMessages();
     this.props.resizeBackground();
   }
 }

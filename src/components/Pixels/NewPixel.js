@@ -337,6 +337,7 @@ class NewPixel extends Component {
     return formatString.replace("#hhhh#", hhhh).replace("#mm#", mm);
   };
   submitPixelData() {
+    const { createNotification } = this.props;
     if (this.state.emotions[0].moodId !== undefined) {
       let data = {
         date: this.state.date.toString(),
@@ -357,7 +358,7 @@ class NewPixel extends Component {
               if (httpRequest.status === 200) {
                 this.props.refreshPixelMoods();
               } else {
-                this.props.messages.push({ text: `Error ${httpRequest.status}: ${httpRequest.statusText}`, type: 'error' });
+                createNotification('error', `Error ${httpRequest.status}: ${httpRequest.statusText}`)
                 let response = JSON.parse(httpRequest.responseText);
                 if (response.hasOwnProperty('errors')) {
                   response.errors.map(err => console.log(err));
@@ -366,13 +367,10 @@ class NewPixel extends Component {
                 } else {
                   console.log(response.message);
                 }
-                this.props.renderMessages();
               }
             }
           } catch (e) {
             console.error(`Caught error: `, e);
-            this.props.messages.push({ text: e, type: "error" });
-            this.props.renderMessages();
           }
         }
       }

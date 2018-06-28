@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import injectSheet from 'react-jss';
 
-//import './App.css';
 import Footer from './components/Footer';
 import Logout from './components/Logout';
 import Nav from './components/Nav';
@@ -15,38 +14,9 @@ import ForgotPassword from './components/ForgotPassword';
 import Reset from './components/Reset';
 import Loader from './components/Loader';
 import BackgroundCanvas from './components/BackgroundCanvas';
+import Notifications from './components/Notifications';
 
-const styles = {
-  messages: {
-    display: `flex`,
-    width: `500px`,
-    flexDirection: `column-reverse`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    position: `fixed`,
-    left: `50%`,
-    transform: `translateX(-50%)`,
-    bottom: `0`,
-    zIndex: `999`,
-    marginTop: `17px`
-  },
-  message: { 
-    fontSize: `22px`,
-    fontWeight: `bold`,
-    padding: `10px 50px`,
-    width: `100%`
-  },
-  error: {
-    background: `#ff7e7e`
-  },
-  success: {
-    background: `#83ff83`
-  },
-  '@keyframes fade-out': {
-    from: {opacity: 1},
-    to: {opacity: 0}
-  }
-}
+const styles = {}
 
 class App extends Component {
   constructor(props) {
@@ -60,8 +30,8 @@ class App extends Component {
     };
     this.logOut = this.logOut.bind(this);
     this.logIn = this.logIn.bind(this);
-    this.removeMessages = this.removeMessages.bind(this);
-    this.renderMessages = this.renderMessages.bind(this);
+    this.removeNotifications = this.removeNotifications.bind(this);
+    this.createNotification = this.createNotification.bind(this);
     this.resizeBackground = this.resizeBackground.bind(this);
     this.setLoading = this.setLoading.bind(this);
     this.updateUserStates = this.updateUserStates.bind(this);
@@ -79,11 +49,10 @@ class App extends Component {
             username={this.state.username}
             userCreated={this.state.userCreated}
             userEmail={this.state.userEmail}
-            messages={this.messages}
-            removeMessages={this.removeMessages}
+            removeNotifications={this.removeNotifications}
+            createNotification={this.createNotification}
             resizeBackground={this.resizeBackground}
             setLoading={this.setLoading}
-            renderMessages={this.renderMessages}
             updateStates={this.updateUserStates}
             removeAccInfo={this.logOut}
             resizeLineSpace={this.resizeLineSpace} />
@@ -91,24 +60,21 @@ class App extends Component {
         <Route path="/logout" render={() => {
           return <Logout
             logOut={this.logOut}
-            messages={this.messages}
-            renderMessages={this.renderMessages}
-            removeMessages={this.removeMessages}
+            removeNotifications={this.removeNotifications}
+            createNotification={this.createNotification}
             resizeBackground={this.resizeBackground} />
         }} />
         <Route path="/pixels" render={() => {
           return <Pixels
-            messages={this.messages}
-            renderMessages={this.renderMessages}
-            removeMessages={this.removeMessages}
+            removeNotifications={this.removeNotifications}
+            createNotification={this.createNotification}
             resizeBackground={this.resizeBackground}
           />
         }} />
         <Route exact path="/" render={() => (
           <About
-            messages={this.messages}
-            renderMessages={this.renderMessages}
-            removeMessages={this.removeMessages}
+            removeNotifications={this.removeNotifications}
+            createNotification={this.createNotification}
             resizeBackground={this.resizeBackground} />
         )} />
         <Route render={() => <Redirect to="/pixels" />} />
@@ -119,40 +85,35 @@ class App extends Component {
           <Route exact path='/profile' render={() => <Redirect to='/' />} />
           <Route path='/reset/:token' render={({ match }) => (
             <Reset
-              messages={this.messages}
-              renderMessages={this.renderMessages}
               token={match.params.token}
-              removeMessages={this.removeMessages}
+              removeNotifications={this.removeNotifications}
+              createNotification={this.createNotification}
               resizeBackground={this.resizeBackground} />
           )} />
           <Route path="/forgot" render={() => {
             return <ForgotPassword
-              messages={this.messages}
-              renderMessages={this.renderMessages}
-              removeMessages={this.removeMessages}
+              removeNotifications={this.removeNotifications}
+              createNotification={this.createNotification}
               resizeBackground={this.resizeBackground} />
           }} />
           <Route path="/login" render={() => {
             return <Login
-              messages={this.messages}
-              renderMessages={this.renderMessages}
               login={this.logIn}
-              removeMessages={this.removeMessages}
+              removeNotifications={this.removeNotifications}
+              createNotification={this.createNotification}
               resizeBackground={this.resizeBackground} />
           }} />
           <Route path="/register" render={() => {
             return <Register
-              messages={this.messages}
-              renderMessages={this.renderMessages}
               setLoading={this.setLoading}
-              removeMessages={this.removeMessages}
+              removeNotifications={this.removeNotifications}
+              createNotification={this.createNotification}
               resizeBackground={this.resizeBackground} />
           }} />
           <Route exact path="/" render={() => {
             return <About
-              messages={this.messages}
-              renderMessages={this.renderMessages}
-              removeMessages={this.removeMessages}
+              removeNotifications={this.removeNotifications}
+              createNotification={this.createNotification}
               resizeBackground={this.resizeBackground} />
           }} />
           <Route render={() => <Redirect to='/' />} />
@@ -161,10 +122,10 @@ class App extends Component {
     const appBody = this.state.loading ? <Loader /> : routes;
     return (
       <div id="App">
+        <Notifications innerRef={(ref) => this.notifications = ref} />
         <BackgroundCanvas innerRef={(ref) => this.backgroundCanvas = ref} />
         <Nav username={this.state.username} logged={this.state.loggedIn} />
         {appBody}
-        <div id="messages" className={classes.messages}></div>
         <Footer />
       </div>
     );
@@ -228,7 +189,7 @@ class App extends Component {
               } else {
                 let response = JSON.parse(httpRequest.responseText);
                 this.messages.push({ text: response.error, type: "error" })
-                this.renderMessages();
+
               }
             } else {
               let response = JSON.parse(httpRequest.responseText);
@@ -237,62 +198,18 @@ class App extends Component {
               } else {
                 this.messages.push({ text: response.message, type: "error" })
               }
-              this.renderMessages();
+
             }
           }
         } catch (e) {
           console.error(`Caught error: `, e);
           this.messages.push({ text: e, type: "error" });
-          this.renderMessages();
         }
       }
     }
   }
-  renderMessages() {
-    const {classes} = this.props;
-    let messagesEl = document.getElementById('messages');
-    for (let i = 0; i < this.messages.length; i++) {
-      let message = document.createElement("div");
-      message.classList.add(classes.message);
-      message.innerHTML = this.messages[i].text;
-      if (this.messages[i].type === "error") {
-        message.classList.add(classes.error);
-      } else {
-        message.classList.add(classes.success);
-      }
-      messagesEl.appendChild(message);
-    }
-    this.messages = [];
-    this.setState({ loading: false });
-  }
-  removeMessages = async function () {
-    function pauseFade() {
-      return new Promise(resolve => {
-        setTimeout(() => { resolve(true) }, 700)
-      });
-    }
-    let messagesChildren = document.getElementById('messages').children;
-    let counter = messagesChildren.length;
-    if (counter > 0) {
-      counter--;
-      for (let i = counter; i >= 0; i--) {
-        let message = messagesChildren.item(i);
-        message.style.animation = `fade-out 3000ms`;
-        setTimeout(() => {
-          try {
-            document.getElementById('messages').removeChild(message);
-          } catch (error) {
-            if (error.code === 8) {
-              // message already deleted, probably by another component, so do nothing
-            } else {
-              // something new
-              this.messages.push({ text: `Err code ${error.code} | Err name: ${error.name} message: ${error.message}`, type: "error" });
-            }
-          }
-        }, 3000);
-        await pauseFade();
-      }
-    }
+  removeNotifications() {
+    this.notifications.removeNotifications();
   }
   resizeBackground() {
     this.backgroundCanvas.resize();
@@ -300,6 +217,9 @@ class App extends Component {
   resizeLineSpace(value) {
     this.backgroundCanvas.lineSpace = value;
     this.backgroundCanvas.resize();
+  }
+  createNotification(type, content) {
+    this.notifications.newNotification(type, content);
   }
 }
 export default injectSheet(styles)(App);

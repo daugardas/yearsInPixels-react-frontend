@@ -51,6 +51,7 @@ class AppSettings extends Component {
   }
   getMoods() {
     // eslint-disable-next-line
+    const { createNotification } = this.props;
     let token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
     if (token) {
       let httpRequest = new XMLHttpRequest();
@@ -63,8 +64,7 @@ class AppSettings extends Component {
             if (httpRequest.status === 200) {
               let response = JSON.parse(httpRequest.responseText);
               let moods = response.moods.map(mood => (
-                <Mood mood={mood} key={mood.moodID} messages={this.props.messages}
-                  renderMessages={this.props.renderMessages} />
+                <Mood mood={mood} key={mood.moodID} removeNotifications={this.removeNotifications} createNotification={this.createNotification} />
               ));
               this.setState({
                 moods: moods
@@ -72,17 +72,14 @@ class AppSettings extends Component {
             } else {
               let response = JSON.parse(httpRequest.responseText);
               if (response.hasOwnProperty('errors')) {
-                response.errors.map(err => this.props.messages.push({ text: err, type: "error" }));
+                response.errors.map(err => createNotification('error', err));
               } else {
-                this.props.messages.push({ text: response.message, type: "error" })
+                createNotification('error', response.error)
               }
-              this.props.renderMessages();
             }
           }
         } catch (e) {
           console.error(`Caught error: `, e);
-          this.props.messages.push({ text: e, type: "error" });
-          this.props.renderMessages();
         }
       }
     }

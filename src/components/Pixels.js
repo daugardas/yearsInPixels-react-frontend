@@ -98,17 +98,17 @@ class Pixels extends Component {
                 moods={this.state.editMoods}
                 userMoods={this.state.userMoods}
                 refreshPixelMoods={this.getPixelMoods}
-                messages={this.props.messages}
-                renderMessages={this.props.renderMessages}
-                resizeBackground={this.props.resizeBackground} />
+                resizeBackground={this.props.resizeBackground}
+                removeNotifications={this.removeNotifications}
+                createNotification={this.createNotification} />
             ) : (
                 <NewPixel
                   date={this.state.editDate}
                   userMoods={this.state.userMoods}
-                  messages={this.props.messages}
-                  renderMessages={this.props.renderMessages}
                   refreshPixelMoods={this.getPixelMoods}
-                  resizeBackground={this.props.resizeBackground} />
+                  resizeBackground={this.props.resizeBackground}
+                  removeNotifications={this.removeNotifications}
+                  createNotification={this.createNotification} />
               )
             }
           </div>
@@ -151,7 +151,6 @@ class Pixels extends Component {
     }
   }
   componentDidMount() {
-    this.props.removeMessages();
     this.props.resizeBackground();
   }
   componentDidUpdate() {
@@ -162,6 +161,7 @@ class Pixels extends Component {
     await this.getPixelMoods();
   }
   getUserMoods() {
+    const { createNotification } = this.props;
     return new Promise(resolve => {
       // eslint-disable-next-line
       let token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
@@ -177,7 +177,7 @@ class Pixels extends Component {
                 let response = JSON.parse(httpRequest.responseText);
                 this.setState({ userMoods: response.moods });
               } else {
-                this.props.messages.push({ text: `Error ${httpRequest.status}: ${httpRequest.statusText}`, type: 'error' });
+                createNotification('error', `Error ${httpRequest.status}: ${httpRequest.statusText}`)
                 let response = JSON.parse(httpRequest.responseText);
                 if (response.hasOwnProperty('errors')) {
                   response.errors.map(err => console.log(err));
@@ -186,20 +186,18 @@ class Pixels extends Component {
                 } else {
                   console.log(response.message);
                 }
-                this.props.renderMessages();
               }
               return resolve(true);
             }
           } catch (e) {
             console.error(`Caught error: `, e);
-            this.props.messages.push({ text: e, type: "error" });
-            this.props.renderMessages();
           }
         }
       }
     });
   }
   getPixelMoods() {
+    const { createNotification } = this.props;
     return new Promise(resolve => {
       this.setState({ pixelMoods: null });
       // eslint-disable-next-line
@@ -216,7 +214,7 @@ class Pixels extends Component {
                 let response = JSON.parse(httpRequest.responseText);
                 this.setState({ pixelMoods: response.moods });
               } else {
-                this.props.messages.push({ text: `Error ${httpRequest.status}: ${httpRequest.statusText}`, type: 'error' });
+                createNotification('error', `Error ${httpRequest.status}: ${httpRequest.statusText}`)
                 let response = JSON.parse(httpRequest.responseText);
                 if (response.hasOwnProperty('errors')) {
                   response.errors.map(err => console.log(err));
@@ -225,14 +223,11 @@ class Pixels extends Component {
                 } else {
                   console.log(response.message);
                 }
-                this.props.renderMessages();
               }
               return resolve(true);
             }
           } catch (e) {
             console.error(`Caught error: `, e);
-            this.props.messages.push({ text: e, type: "error" });
-            this.props.renderMessages();
           }
         }
       }

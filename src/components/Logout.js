@@ -92,7 +92,6 @@ class Logout extends Component {
     );
   }
   componentDidMount() {
-    this.props.removeMessages();
     this.props.resizeBackground();
   }
 }

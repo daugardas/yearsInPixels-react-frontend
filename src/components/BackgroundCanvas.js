@@ -50,7 +50,7 @@ class BackgroundCanvas extends Component {
     window.onresize = () => {
       this.resize();
     };
-    
+
   }
   resize() {
     this.canvas.width = "";
@@ -61,7 +61,7 @@ class BackgroundCanvas extends Component {
     this.yLinesCount = Math.floor(this.canvas.height / this.lineSpace);
     /* this.drawPixelsDates(); */
     this.drawBackgroundLines();
-    
+
   }
   drawPixelsDates() {
     this.ctx.fillStyle = 'green';

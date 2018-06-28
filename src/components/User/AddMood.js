@@ -38,12 +38,12 @@ const styles = {
   },
   button: {
     padding: `0 4px`,
-  marginLeft: `30px`,
-  backgroundColor: `#73E673`,
-  fontSize: `25px`,
-  border: `2px solid #66CC66`,
-  borderRadius: `30px`,
-  transition: `font-weight 0.3s ease, transform 0.3s ease, color 0.3s ease`
+    marginLeft: `30px`,
+    backgroundColor: `#73E673`,
+    fontSize: `25px`,
+    border: `2px solid #66CC66`,
+    borderRadius: `30px`,
+    transition: `font-weight 0.3s ease, transform 0.3s ease, color 0.3s ease`
   }
 };
 
@@ -53,7 +53,7 @@ class AddMood extends Component {
     this.addMood = this.addMood.bind(this);
   }
   render() {
-    const {classes} = this.props;
+    const { classes } = this.props;
     return (
       <div className={classes.container}>
         <input type="text" className={classes.nameInput} id="mood-name-input" placeholder="Enter pixel name" />
@@ -63,18 +63,18 @@ class AddMood extends Component {
     );
   }
   addMood() {
-    document.getElementById('messages').innerHTML = '';
+    const { createNotification } = this.props;
     let moodName = document.getElementById('mood-name-input').value;
     let moodColor = document.getElementById('mood-color-input').value;
     let makeRequest = true;
     if (moodName === '') {
       makeRequest = false;
       document.getElementById('mood-name-input').setCustomValidity("Enter mood name!");
-      this.props.messages.push({ text: "Please enter a mood name", type: "error" });
+      createNotification('error', "Enter mood name!")
     } else if (moodName.length > 50) {
       makeRequest = false;
-      document.getElementById('mood-name-input').setCustomValidity(`Mood name can't be longer than 50 characters!`);
-      this.props.messages.push({ text: `Mood name can't be longer than 50 characters!`, type: "error" });
+      document.getElementById('mood-name-input').setCustomValidity("Mood name can't be longer than 50 characters!");
+      createNotification('error', "Mood name can't be longer than 50 characters!")
     }
     if (makeRequest) {
       document.getElementById('mood-name-input').value = '';
@@ -98,23 +98,18 @@ class AddMood extends Component {
             } else {
               let response = JSON.parse(httpRequest.responseText);
               if (response.hasOwnProperty('errors')) {
-                response.errors.map(err => this.props.messages.push({ text: err, type: "error" }));
+                response.errors.map(err => createNotification('error', err));
               } else if (response.hasOwnProperty('error')) {
-                this.props.messages.push({ text: response.error, type: 'error' });
+                createNotification('error', response.error)
               } else {
-                this.props.messages.push({ text: response.message, type: "error" })
+                createNotification('error', response.message)
               }
             }
-            this.props.renderMessages();
           }
         } catch (e) {
           console.error(`Caught error: `, e);
-          this.props.messages.push({ text: e, type: "error" });
-          this.props.renderMessages();
         }
       }
-    } else {
-      this.props.renderMessages();
     }
   }
 }

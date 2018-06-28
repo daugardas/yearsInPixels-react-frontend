@@ -185,8 +185,7 @@ class User extends Component {
     return this.state.loading ? (<Loader />) : (
       <div className={classes.container}>
         {userProfileSettings}
-        <AppSettings messages={this.props.messages}
-          renderMessages={this.props.renderMessages} />
+        <AppSettings />
       </div>
     );
   }
@@ -245,14 +244,14 @@ class User extends Component {
     }
   }
   deleteUser(e) {
+    const { createNotification } = this.props;
     e.preventDefault();
     this.setState({ loading: true });
-    document.getElementById('messages').innerHTML = "";
     let password = document.getElementById('old-password').value;
     let makeRequest = true;
     if (password === '') {
       makeRequest = false;
-      this.props.messages.push({ text: "Enter your password.", type: "error" });
+      createNotification('error', 'Enter your password.')
       document.getElementById('old-password').setCustomValidity("Enter your password.");
       this.setState({ loading: false });
     }
@@ -271,40 +270,39 @@ class User extends Component {
         try {
           if (httpRequest.readyState === XMLHttpRequest.DONE) {
             if (httpRequest.status === 200) {
-              this.props.messages.push({ text: "Succesfully deleted your account!", type: "message" });
+              //createNotification('success', "Succesfully deleted your account!")
               this.setState({ loading: false });
-              this.props.renderMessages();
               this.props.removeAccInfo();
             } else {
-              this.props.messages.push({ text: `Error ${httpRequest.status}: ${httpRequest.statusText}`, type: 'error' });
               let response = JSON.parse(httpRequest.responseText);
               if (response.hasOwnProperty('errors')) {
-                response.errors.map(err => console.log(err));
+                response.errors.map(err => {
+                  console.log(err);
+                  createNotification('error', err)
+                });
               } else if (response.hasOwnProperty('error')) {
                 console.log(response.error)
+                createNotification('error', response.error);
               } else {
                 console.log(response.message);
+                createNotification('error', response.message);
               }
               this.setState({ loading: false });
-              this.props.renderMessages();
             }
           }
         } catch (e) {
           console.error(`Caught error: `, e);
-          this.props.messages.push({ text: e, type: "error" });
           this.setState({ loading: false });
-          this.props.renderMessages();
         }
       }
     } else {
       this.setState({ loading: false });
-      this.props.renderMessages();
     }
   }
   updateUser(e) {
+    const { createNotification } = this.props;
     e.preventDefault();
     this.setState({ loading: true });
-    document.getElementById('messages').innerHTML = "";
     let newUsername = document.getElementById('new-username').value;
     let newEmail = document.getElementById('new-email').value;
     let newPassword = document.getElementById('new-password').value;
@@ -312,35 +310,36 @@ class User extends Component {
     let oldPassword = document.getElementById(`old-password`).value;
     let newUser = { password: oldPassword };
     let makeRequest = true;
+
     // validate inputs
     if (oldPassword === '') {
       makeRequest = false;
-      this.props.messages.push({ text: "Enter your password.", type: "error" });
+      createNotification('error', 'Enter your password.');
       document.getElementById('old-password').setCustomValidity("Enter your password.");
       this.setState({ loading: false });
     } else {
       if (newPassword !== "") {
         newUser.newPassword = newPassword;
         if (newPassword !== confNewPassword) {
-          this.props.messages.push({ text: "Passwords do not match.", type: "error" })
+          createNotification('error', "Passwords do not match.");
           makeRequest = false;
           document.getElementById('new-password').setCustomValidity("Passwords do not match.")
           document.getElementById('conf-new-password').setCustomValidity("Passwords do not match.")
         }
         if (newPassword.length < 8) {
           makeRequest = false;
-          this.props.messages.push({ text: `Minimum password length is 8 characters.`, type: "error" });
+          createNotification('error', "Minimum password length is 8 characters.");
           document.getElementById('new-password').setCustomValidity("Minimum password length is 8 characters.")
         } else if (newPassword.length > 128) {
           makeRequest = false;
-          this.props.messages.push({ text: `Maximum password length is 128 characters.`, type: "error" });
+          createNotification('error', "Maximum password length is 128 characters.");
           document.getElementById('new-password').setCustomValidity("Maximum password length is 128 characters.")
         } else {
           let passwordRegExp = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))/g;
           if (!passwordRegExp.test(newPassword)) {
             makeRequest = false;
-            document.getElementById('new-password').setCustomValidity("Password must be least one lowercase letter and one number or one lowecase letter and uppercase letter.")
-            this.props.messages.push({ text: `Password must be least one lowercase letter and one number or one lowecase letter and uppercase letter.`, type: "error" });
+            document.getElementById('new-password').setCustomValidity("Password must be have one lowercase letter and one number or one lowecase letter and uppercase letter.")
+            createNotification('error', "Password must be have one lowercase letter and one number or one lowecase letter and uppercase letter");
           }
         }
       }
@@ -349,20 +348,20 @@ class User extends Component {
         let emailRegEx = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (!emailRegEx.test(newEmail)) {
           makeRequest = false;
-          this.props.messages.push({ text: 'Email adress is invalid.', type: "error" });
+          createNotification('error', "Email adress is invalid.");
           document.getElementById('new-email').setCustomValidity("Email adress is invalid.");
         }
       }
       if (newUsername !== "") {
         newUser.newUsername = newUsername;
-        if (newUsername.length < 5) {
-          this.props.messages.push({ text: `Username must be higher than 5 characters.`, type: "error" });
-          document.getElementById('new-username').setCustomValidity("Username must be higher than 5 characters.");
+        if (newUsername.length < 2) {
+          createNotification('error', "Username must be longer than 2 characters.");
+          document.getElementById('new-username').setCustomValidity("Username must be longer than 2 characters.");
           makeRequest = false;
         } else if (newUsername.length > 35) {
           makeRequest = false;
-          this.props.messages.push({ text: `Username must be lower than 32 characters.`, type: "error" });
-          document.getElementById('new-username').setCustomValidity("Username must be lower than 32 characters.");
+          createNotification('error', "Username must be shorter than 32 characters.");
+          document.getElementById('new-username').setCustomValidity("Username must be shorter than 32 characters.");
         }
       }
     }
@@ -378,7 +377,7 @@ class User extends Component {
         try {
           if (httpRequest.readyState === XMLHttpRequest.DONE) {
             if (httpRequest.status === 201) {
-              this.props.messages.push({ text: "Succesfully updated your information!", type: "message" });
+              createNotification('success', "Succesfully updated your information!");
               let response = JSON.parse(httpRequest.responseText);
               document.cookie = `token=${response.token}`;
               document.cookie = `username=${response.data.username}`;
@@ -388,31 +387,26 @@ class User extends Component {
             } else {
               let response = JSON.parse(httpRequest.responseText);
               if (response.hasOwnProperty('errors')) {
-                response.errors.map(err => this.props.messages.push({ text: err, type: "error" }));
+                response.errors.map(err => createNotification('error', err));
               } else if (response.hasOwnProperty('error')) {
-                this.props.messages.push({ text: response.error, type: 'error' });
+                createNotification('error', response.error);
               } else {
-                this.props.messages.push({ text: response.message, type: "error" })
+                createNotification('error', response.message);
               }
             }
             this.setState({ loading: false });
-            this.props.renderMessages();
             this.props.updateStates();
           }
         } catch (e) {
           console.error(`Caught error: `, e);
-          this.props.messages.push({ text: e, type: "error" });
           this.setState({ loading: false });
-          this.props.renderMessages();
         }
       }
     } else {
       this.setState({ loading: false });
-      this.props.renderMessages();
     }
   }
   componentDidMount() {
-    this.props.removeMessages();
     this.props.resizeBackground();
   }
   formatDate = function (formatString, date) {

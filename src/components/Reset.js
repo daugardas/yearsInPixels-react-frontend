@@ -186,6 +186,7 @@ class Reset extends Component {
     }
   }
   recover(e) {
+    const { createNotification } = this.props;
     e.preventDefault();
     this.setState({ loading: true })
     const newPassword = document.getElementById('password').value;
@@ -196,22 +197,22 @@ class Reset extends Component {
 
     let passwordRegExp = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))/g;
     if (newPassword !== confNewPassword) {
-      this.props.messages.push({ text: "Passwords do not match.", type: "error" })
+      createNotification('error', "Passwords do not match.");
       makeRequest = false;
       document.getElementById('password').setCustomValidity("Passwords do not match.")
       document.getElementById('conf-password').setCustomValidity("Passwords do not match.")
     } else if (newPassword.length < 8) {
       makeRequest = false;
-      this.props.messages.push({ text: `Minimum password length is 8 characters.`, type: "error" });
+      createNotification('error', "Minimum password length is 8 characters.");
       document.getElementById('password').setCustomValidity("Minimum password length is 8 characters.")
     } else if (newPassword.length > 128) {
       makeRequest = false;
-      this.props.messages.push({ text: `Maximum password length is 128 characters.`, type: "error" });
+      createNotification('error', "Maximum password length is 128 characters.");
       document.getElementById('password').setCustomValidity("Maximum password length is 128 characters.")
     } else if (!passwordRegExp.test(newPassword)) {
       makeRequest = false;
+      createNotification('error', "Password must be least one lowercase letter and one number or one lowecase letter and uppercase letter.");
       document.getElementById('password').setCustomValidity("Password must be least one lowercase letter and one number or one lowecase letter and uppercase letter.")
-      this.props.messages.push({ text: `Password must be least one lowercase letter and one number or one lowecase letter and uppercase letter.`, type: "error" });
     }
 
     if (makeRequest) {
@@ -229,19 +230,16 @@ class Reset extends Component {
           if (httpRequest.readyState === XMLHttpRequest.DONE) {
             let response = JSON.parse(httpRequest.responseText);
             if (httpRequest.status === 200) {
-              this.props.messages.push({ text: response.message, type: 'message' });
+              createNotification('success', response.message)
               this.setState({ redirectLogin: true });
             } else {
-              this.props.messages.push({ text: response.message, type: 'error' })
               this.setState({ redirectForgot: true });
             }
             this.props.renderMessages();
           }
         } catch (e) {
           console.error(`Caught error: `, e);
-          this.props.messages.push({ text: e, type: "error" });
-          this.setState({ loading: false });
-          this.props.renderMessages();
+          this.setState({ loading: false })
         }
       }
     } else {
@@ -272,9 +270,7 @@ class Reset extends Component {
         }
       } catch (e) {
         console.error(`Caught error: `, e);
-        this.props.messages.push({ text: e, type: "error" });
         this.setState({ loading: false });
-        this.props.renderMessages();
       }
     }
   }
@@ -288,7 +284,6 @@ class Reset extends Component {
     }
   }
   componentDidMount() {
-    this.props.removeMessages();
     this.props.resizeBackground();
     this.requestRecover();
   }

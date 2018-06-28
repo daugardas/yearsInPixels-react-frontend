@@ -66,7 +66,7 @@ const styles = {
       color: `#D9D92B`
     }
   },
-  removeIcon:{
+  removeIcon: {
     marginLeft: `12px`,
     fontSize: `22px`,
     color: `#cc2828`,
@@ -123,6 +123,7 @@ class Mood extends Component {
   }
   removeMood() {
     this.setState({ removed: true });
+    const { createNotification } = this.props;
     // eslint-disable-next-line
     let token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
     let httpRequest = new XMLHttpRequest();
@@ -141,32 +142,29 @@ class Mood extends Component {
           } else {
             let response = JSON.parse(httpRequest.responseText);
             if (response.hasOwnProperty('error')) {
-              this.props.messages.push({ text: response.error, type: 'error' });
+              createNotification('error', response.error);
             } else {
-              this.props.messages.push({ text: response.message, type: "error" })
+              createNotification('error', response.message);
             }
             this.setState({ removed: false });
           }
-          this.props.renderMessages();
         }
       } catch (e) {
         console.error(`Caught error: `, e);
-        this.props.messages.push({ text: e, type: "error" });
-        this.props.renderMessages();
       }
     }
   }
   editMood() {
-    document.getElementById('messages').innerHTML = '';
+    const { createNotification } = this.props;
     let makeRequest = true;
     if (this.state.moodName === '') {
       makeRequest = false;
       document.getElementById('edit-mood-name-input').setCustomValidity("Enter pixels name!");
-      this.props.messages.push({ text: "Please enter pixels name", type: "error" });
+      createNotification('error', "Enter pixels name!");
     } else if (this.state.moodName.length > 50) {
       makeRequest = false;
-      document.getElementById('edit-mood-name-input').setCustomValidity(`Pixels name can't be longer than 50 characters!`);
-      this.props.messages.push({ text: `Pixels name can't be longer than 50 characters!`, type: "error" });
+      document.getElementById('edit-mood-name-input').setCustomValidity("Pixels name can't be longer than 50 characters!");
+      createNotification('error', "Pixels name can't be longer than 50 characters!");
     }
     if (makeRequest) {
       // eslint-disable-next-line
@@ -191,23 +189,19 @@ class Mood extends Component {
             } else {
               let response = JSON.parse(httpRequest.responseText);
               if (response.hasOwnProperty('errors')) {
-                response.errors.map(err => this.props.messages.push({ text: err, type: "error" }));
+                response.errors.map(err => createNotification('error', err));
               } else if (response.hasOwnProperty('error')) {
-                this.props.messages.push({ text: response.error, type: 'error' });
+                createNotification('error', response.error)
               } else {
-                this.props.messages.push({ text: response.message, type: "error" })
+                createNotification('error', response.message)
               }
             }
             this.props.renderMessages();
           }
         } catch (e) {
           console.error(`Caught error: `, e);
-          this.props.messages.push({ text: e, type: "error" });
-          this.props.renderMessages();
         }
       }
-    } else {
-      this.props.renderMessages();
     }
   }
 }

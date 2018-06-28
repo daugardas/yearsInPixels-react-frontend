@@ -435,6 +435,7 @@ class EditPixel extends Component {
     });
   }
   submitEditedPixelData() {
+    const { createNotification } = this.props;
     // for every mood, append it's name and color by it's id
     let moods = this.state.moods
     for (let i = 0; i < moods.length; i++) {
@@ -471,8 +472,7 @@ class EditPixel extends Component {
             } else {
               console.log(`Edit pixel state:`, this.state);
               console.log(`Requested submit with data:`, data);
-
-              this.props.messages.push({ text: `Error ${httpRequest.status}: ${httpRequest.statusText}`, type: 'error' });
+              createNotification('error', `Error ${httpRequest.status}: ${httpRequest.statusText}`)
               let response = JSON.parse(httpRequest.responseText);
               if (response.hasOwnProperty('errors')) {
                 response.errors.map(err => console.log(err));
@@ -481,13 +481,10 @@ class EditPixel extends Component {
               } else {
                 console.log(response.message);
               }
-              this.props.renderMessages();
             }
           }
         } catch (e) {
           console.error(`Caught error: `, e);
-          this.props.messages.push({ text: e, type: "error" });
-          this.props.renderMessages();
         }
       }
     }
@@ -540,6 +537,7 @@ class EditPixel extends Component {
     }, 1000);
   }
   removePixel() {
+    const { createNotification } = this.props;
     let data = {
       id: this.state.dayID,
     };
@@ -557,7 +555,7 @@ class EditPixel extends Component {
             if (httpRequest.status === 200) {
               this.props.refreshPixelMoods();
             } else {
-              this.props.messages.push({ text: `Error ${httpRequest.status}: ${httpRequest.statusText}`, type: 'error' });
+              createNotification('error', `Error ${httpRequest.status}: ${httpRequest.statusText}`)
               let response = JSON.parse(httpRequest.responseText);
               if (response.hasOwnProperty('errors')) {
                 response.errors.map(err => console.log(err));
@@ -566,13 +564,10 @@ class EditPixel extends Component {
               } else {
                 console.log(response.message);
               }
-              this.props.renderMessages();
             }
           }
         } catch (e) {
           console.error(`Caught error: `, e);
-          this.props.messages.push({ text: e, type: "error" });
-          this.props.renderMessages();
         }
       }
     }

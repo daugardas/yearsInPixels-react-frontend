@@ -145,9 +145,9 @@ class Login extends Component {
     );
   }
   login(e) {
+    const { createNotification } = this.props;
     e.preventDefault();
     this.setState({ loading: true });
-    document.getElementById('messages').innerHTML = "";
     this.username = document.getElementById('username').value;
     this.password = document.getElementById('password').value;
     document.getElementById('password').type = "password";
@@ -169,27 +169,22 @@ class Login extends Component {
             document.cookie = `userID=${response.data.id}`;
             document.cookie = `userCreated=${response.data.dateCreated}`;
             document.cookie = `userEmail=${response.data.email}`;
-            this.props.messages.push({ text: "Succesfully logged in!", type: "message" });
-            this.props.renderMessages();
             this.setState({ loading: false });
             this.props.login();
           } else {
             let response = JSON.parse(httpRequest.responseText);
             if (response.hasOwnProperty('errors')) {
-              response.errors.map(err => this.props.messages.push({ text: err, type: "error" }));
+              response.errors.map(err => createNotification('error', response.errors));
             } else if (response.hasOwnProperty('error')) {
-              this.props.messages.push({ text: response.error, type: "error" });
+              createNotification('error', response.error)
             } else {
-              this.props.messages.push({ text: response.message, type: "error" })
+              createNotification('error', response.message)
             }
             this.setState({ loading: false });
-            this.props.renderMessages();
           }
         }
       } catch (e) {
         console.error(`Caught error: `, e);
-        this.props.messages.push({ text: e, type: "error" });
-        this.props.renderMessages();
       }
     }
   }
@@ -212,7 +207,6 @@ class Login extends Component {
     }
   }
   componentDidMount() {
-    this.props.removeMessages();
     this.props.resizeBackground();
   }
 }
