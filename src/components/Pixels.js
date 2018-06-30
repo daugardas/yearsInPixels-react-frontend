@@ -212,7 +212,6 @@ class Pixels extends Component {
             if (httpRequest.readyState === XMLHttpRequest.DONE) {
               if (httpRequest.status === 200) {
                 let response = JSON.parse(httpRequest.responseText);
-                console.log(response.moods);
                 this.setState({ pixelMoods: response.moods });
               } else {
                 createNotification('error', `Error ${httpRequest.status}: ${httpRequest.statusText}`)
