@@ -40,8 +40,7 @@ class AppSettings extends Component {
         <div className={classes.headerContainer}><span>Pixels</span></div>
         <div className={classes.moodsList} id="moods">
           {this.state.moods}
-          <AddMood getMoods={this.getMoods} messages={this.props.messages}
-            renderMessages={this.props.renderMessages} />
+          <AddMood getMoods={this.getMoods} removeNotifications={this.props.removeNotifications} createNotification={this.props.createNotification}/>
         </div>
       </div>
     );
@@ -50,8 +49,8 @@ class AppSettings extends Component {
     this.getMoods();
   }
   getMoods() {
-    // eslint-disable-next-line
     const { createNotification } = this.props;
+    // eslint-disable-next-line
     let token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
     if (token) {
       let httpRequest = new XMLHttpRequest();
@@ -64,7 +63,7 @@ class AppSettings extends Component {
             if (httpRequest.status === 200) {
               let response = JSON.parse(httpRequest.responseText);
               let moods = response.moods.map(mood => (
-                <Mood mood={mood} key={mood.moodID} removeNotifications={this.removeNotifications} createNotification={this.createNotification} />
+                <Mood mood={mood} key={mood.moodID} removeNotifications={this.props.removeNotifications} createNotification={this.props.createNotification} />
               ));
               this.setState({
                 moods: moods

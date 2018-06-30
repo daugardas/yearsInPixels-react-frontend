@@ -70,7 +70,6 @@ export class ForgotPassword extends Component {
     this.forgot = this.forgot.bind(this);
   }
   render() {
-    console.log(this.props)
     const { classes } = this.props;
     const form = this.state.loading ? <Loader /> : (
       <form method="post">

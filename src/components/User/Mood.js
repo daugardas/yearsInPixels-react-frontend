@@ -146,7 +146,9 @@ class Mood extends Component {
             } else {
               createNotification('error', response.message);
             }
-            this.setState({ removed: false });
+            this.setState(prevState => {
+              return {removed: false};
+            });
           }
         }
       } catch (e) {

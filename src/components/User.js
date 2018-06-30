@@ -185,7 +185,7 @@ class User extends Component {
     return this.state.loading ? (<Loader />) : (
       <div className={classes.container}>
         {userProfileSettings}
-        <AppSettings />
+        <AppSettings removeNotifications={this.props.removeNotifications} createNotification={this.props.createNotification} />
       </div>
     );
   }
@@ -276,7 +276,7 @@ class User extends Component {
             } else {
               let response = JSON.parse(httpRequest.responseText);
               if (response.hasOwnProperty('errors')) {
-                response.errors.map(err => {
+                response.errors.array.forEach(err => {
                   console.log(err);
                   createNotification('error', err)
                 });

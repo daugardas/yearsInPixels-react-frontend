@@ -39,7 +39,7 @@ class App extends Component {
     this.messages = [];
   }
   render() {
-    const { classes } = this.props;
+    // const { classes } = this.props;
     const routes = this.state.loggedIn ? (
       <Switch>
         <Route exact path='/login' render={() => <Redirect to='/pixels' />} />

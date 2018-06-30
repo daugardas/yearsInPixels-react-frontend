@@ -99,16 +99,16 @@ class Pixels extends Component {
                 userMoods={this.state.userMoods}
                 refreshPixelMoods={this.getPixelMoods}
                 resizeBackground={this.props.resizeBackground}
-                removeNotifications={this.removeNotifications}
-                createNotification={this.createNotification} />
+                removeNotifications={this.props.removeNotifications}
+                createNotification={this.props.createNotification} />
             ) : (
                 <NewPixel
                   date={this.state.editDate}
                   userMoods={this.state.userMoods}
                   refreshPixelMoods={this.getPixelMoods}
                   resizeBackground={this.props.resizeBackground}
-                  removeNotifications={this.removeNotifications}
-                  createNotification={this.createNotification} />
+                  removeNotifications={this.props.removeNotifications}
+                  createNotification={this.props.createNotification} />
               )
             }
           </div>
@@ -212,6 +212,7 @@ class Pixels extends Component {
             if (httpRequest.readyState === XMLHttpRequest.DONE) {
               if (httpRequest.status === 200) {
                 let response = JSON.parse(httpRequest.responseText);
+                console.log(response.moods);
                 this.setState({ pixelMoods: response.moods });
               } else {
                 createNotification('error', `Error ${httpRequest.status}: ${httpRequest.statusText}`)
