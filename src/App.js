@@ -125,7 +125,7 @@ class App extends Component {
         <Notifications innerRef={(ref) => this.notifications = ref} />
         <BackgroundCanvas innerRef={(ref) => this.backgroundCanvas = ref} />
         <Nav username={this.state.username} logged={this.state.loggedIn} />
-        {appBody}
+        <div style={{marginTop: '60px'}}>{appBody}</div>
         <Footer />
       </div>
     );

@@ -1,56 +1,50 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
 import injectSheet from 'react-jss';
+
+import DesktopNav from './Nav/DesktopNav';
+import MobileNav from './Nav/MobileNav';
+import NavBars from './Nav/NavBars';
 
 const styles = {
   container: {
     display: `flex`,
     width: `100%`,
-    zIndex: `999`,
-    justifyContent: `space-evenly`
+    flexDirection: 'column',
+    zIndex: 9999
   },
-  link: {
-    width: `fit-content`,
-    height: `60px`,
-    display: `flex`,
-    flexShrink: `1`,
-    alignItems: `flex-end`,
-    justifyContent: `center`,
-    textDecoration: `none`,
-    fontSize: ` 45px`,
-    transition: `transform 0.25s ease, font-weight 0.2s`,
-    color: `#7c95a0`,
-    '&:hover': {
-      fontWeight: `700`,
-      transform: `scale(1.08)`,
-      cursor: `pointer`
-    }
-  },
-  activeLink: {
-    color: `#4b5b66`
+  '@media (max-width: 1024px)': {
+    container: {
+      position: 'fixed',
+      top: 0,
+      background: '#f3fbff',
+      boxShadow: '0px 1px 5px 0px rgba(0,0,0,0.1)'
+    },
   }
 };
 
 class Nav extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      width: window.innerWidth,
+      displayMobileNav: false
+    }
+  }
   render() {
-    const { classes } = this.props;
-    const userNav = this.props.logged ? (
-      <nav>
-        <NavLink activeClassName={classes.activeLink} to='/profile' className={classes.link}>{this.props.username}</NavLink>
-        <NavLink activeClassName={classes.activeLink} to="/pixels" className={classes.link}>Pixels</NavLink>
-        <NavLink exact activeClassName={classes.activeLink} to="/" className={classes.link}>About</NavLink>
-        <NavLink activeClassName={classes.activeLink} to="/logout" className={classes.link}>Log out</NavLink>
-      </nav>
-    ) : (
-        <nav>
-          <NavLink activeClassName={classes.activeLink} to="/login" className={classes.link}>Login</NavLink>
-          <NavLink activeClassName={classes.activeLink} to="/register" className={classes.link}>Register</NavLink>
-          <NavLink exact activeClassName={classes.activeLink} to="/" className={classes.link}>About</NavLink>
-        </nav>
-      );
+    const { width, displayMobileNav } = this.state;
+    const { classes, logged, username } = this.props;
     return (
-      <nav className={classes.container}>{userNav.props.children}</nav>
+      <nav className={classes.container}>
+        <NavBars onClick={this.displayNav.bind(this)} />
+        {width < 1024 ? <MobileNav display={displayMobileNav} logged={logged} width={width} username={username}/> : <DesktopNav logged={logged} username={username} />}
+      </nav>
     );
+  }
+  displayNav() {
+    this.setState(prevState => ({ displayMobileNav: !prevState.displayMobileNav }))
+  }
+  componentDidMount() {
+    window.addEventListener('resize', () => this.setState({ width: window.innerWidth }));
   }
 }
 
