@@ -8,7 +8,6 @@ A web-app (maybe later on android and ios) project I made in my free time.
 - [ ] Make web-app mobile-responsive
 - [ ] Emphasize Pixels tab
 - [ ] Create graphs page
-- [ ] Implement 'cant remove pixel, cause it is part of some day emotions' thing in the server
 - [ ] Highlight current day in pixel grid
 - [ ] When hovering over trash can, display "If you are sure about your choice, hold for 3s"
 - [ ] Highlight chosen day in the grid
