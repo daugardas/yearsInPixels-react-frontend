@@ -4,6 +4,7 @@ A web-app (maybe later on android and ios) project I made in my free time.
 
 ### To-do list
 
+- [ ] Extract reused functionality to their components
 - [ ] Fix bug: canceling pixel editing, shows no emotions
 - [ ] Make web-app mobile-responsive
 - [ ] Emphasize Pixels tab
