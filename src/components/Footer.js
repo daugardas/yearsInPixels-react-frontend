@@ -22,7 +22,8 @@ const styles = {
       width: `25px`,
       marginLeft: `5px`
     }
-  }
+  },
+  
 };
 class Footer extends Component {
   render() {
