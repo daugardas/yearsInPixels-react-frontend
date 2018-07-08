@@ -102,7 +102,6 @@ class Login extends Component {
   }
   handlePasswordChange(val){
     this.setState({ password: val});
-    console.log(val);
   }
   login() {
     this.setState({ loading: true });
