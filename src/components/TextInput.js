@@ -3,20 +3,20 @@ import injectSheet from 'react-jss';
 
 const styles = {
   input: {
-    fontFamily: `Indie Flower, cursive`,
-    float: `right`,
-    fontSize: `22px`,
-    marginLeft: `20px`,
-    background: `#f3fbff`,
-    width: `290px`,
-    borderRadius: `25px`,
-    border: ` 1px solid #d8efff`,
-    padding: ` 5px 10px 5px 15px`,
-    lineHeight: `35px`,
-    caretColor: `#a1d2ff`,
-    transition: `box-shadow 0.5s ease`,
+    fontFamily: 'Indie Flower, cursive',
+    float: 'right',
+    fontSize: 22,
+    marginLeft: 20,
+    background: '#f3fbff',
+    width: 290,
+    borderRadius: 25,
+    border: '1px solid #d8efff',
+    padding: '5px 10px 5px 15px',
+    lineHeight: '35px',
+    caretColor: '#a1d2ff',
+    transition: 'box-shadow 0.5s ease',
     '&:focus': {
-      boxShadow: `0px 0px 0px 2px #a9dbff`
+      boxShadow: '0px 0px 0px 2px #a9dbff'
     }
   }
 }
