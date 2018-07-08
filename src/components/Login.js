@@ -3,6 +3,9 @@ import { NavLink } from 'react-router-dom';
 import injectSheet from 'react-jss';
 
 import Loader from './Loader';
+import TextInput from './TextInput';
+import PasswordInput from './PasswordInput';
+import SubmitButton from './SubmitButton';
 
 const styles = {
   container: {
@@ -25,42 +28,6 @@ const styles = {
     '& label': {
       fontSize: `35px`,
       color: `#364d6b`
-    }
-  },
-  input: {
-    fontFamily: `Indie Flower, cursive`,
-    float: `right`,
-    fontSize: `22px`,
-    marginLeft: `20px`,
-    background: `#f3fbff`,
-    width: `290px`,
-    borderRadius: `25px`,
-    border: ` 1px solid #d8efff`,
-    padding: ` 5px 10px 5px 15px`,
-    lineHeight: `35px`,
-    caretColor: `#a1d2ff`,
-    transition: `box-shadow 0.5s ease`,
-    '&:focus': {
-      boxShadow: `0px 0px 0px 2px #a9dbff`
-    }
-  },
-  inputPass: {
-    fontFamily: `Indie Flower, cursive`,
-    float: `right`,
-    marginLeft: `20px`,
-    background: `#f3fbff`,
-    borderRadius: `25px`,
-    border: ` 1px solid #d8efff`,
-    padding: ` 5px 10px 5px 15px`,
-    lineHeight: `35px`,
-    borderTopRightRadius: `0`,
-    borderBottomRightRadius: `0`,
-    fontSize: `16px`,
-    width: `249px`,
-    caretColor: `#a1d2ff`,
-    transition: `box-shadow 0.5s ease`,
-    '&:focus': {
-      boxShadow: `0px 0px 0px 2px #a9dbff`
     }
   },
   iconContainer: {
@@ -94,47 +61,33 @@ const styles = {
       fontSize: `20px`,
       textDecoration: `none`
     }
-  },
-  button: {
-    padding: `10px`,
-    width: `130px`,
-    backgroundColor: `#eef9ff`,
-    fontSize: `25px`,
-    margin: `0 10px`,
-    border: `5px solid #dbf0ff`,
-    borderRadius: `30px`,
-    transition: `font - weight 0.3s ease, transform 0.3s ease, color 0.3s ease`,
-    alignSelf: `center`,
-    '&:hover': {
-      fontWeight: `700`,
-      cursor: `pointer`,
-      transform: `scale(1.02)`
-    }
   }
 };
 
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = { loading: false };
+    this.state = {
+      loading: false,
+      username: '',
+      password: ''
+    };
     this.login = this.login.bind(this);
   }
   render() {
     const { classes } = this.props;
+    const { username, password } = this.state;
     const form = this.state.loading ? <Loader /> : (
       <form method="post">
         <div className={classes.inputContainer}>
           <label htmlFor="username">Username:</label>
-          <input required id="username" className={classes.input} name="username" type="text" />
+          <TextInput onChange={this.handleUsernameChange.bind(this)} value={username} />
         </div>
         <div className={classes.inputContainer}>
           <label htmlFor="password">Password:</label>
-          <div className={classes.iconContainer}>
-            <i id="pass-icon" className="fas fa-eye-slash hide" onClick={this.showPass}></i>
-          </div>
-          <input required className={classes.inputPass} type="password" name="password" id="password" />
+          <PasswordInput value={password} onChange={this.handlePasswordChange.bind(this)}/>
         </div>
-        <button type="submit" onClick={this.login} className={classes.button}>Login</button>
+        <SubmitButton onClick={this.login}>Login</SubmitButton>
         <div className={classes.forgot}><NavLink to="/forgot">Forgot your password?</NavLink></div>
       </form>
     );
@@ -144,17 +97,23 @@ class Login extends Component {
       </div>
     );
   }
-  login(e) {
-    const { createNotification } = this.props;
-    e.preventDefault();
+  handleUsernameChange(val){
+    this.setState({ username: val});
+  }
+  handlePasswordChange(val){
+    this.setState({ password: val});
+    console.log(val);
+  }
+  login() {
     this.setState({ loading: true });
-    this.username = document.getElementById('username').value;
-    this.password = document.getElementById('password').value;
-    document.getElementById('password').type = "password";
+    const { createNotification } = this.props;
+    const { username, password } = this.state;
+    
     let user = {
-      'username': this.username,
-      'password': this.password,
+      username: username,
+      password: password,
     }
+
     let httpRequest = new XMLHttpRequest();
     httpRequest.open('POST', `https://api.yearsinpixels.com/api/login`, true);
     httpRequest.setRequestHeader("Content-Type", "application/json");
@@ -164,15 +123,18 @@ class Login extends Component {
         if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
             let response = JSON.parse(httpRequest.responseText);
+
             document.cookie = `token=${response.token}`;
             document.cookie = `username=${response.data.username}`;
             document.cookie = `userID=${response.data.id}`;
             document.cookie = `userCreated=${response.data.dateCreated}`;
             document.cookie = `userEmail=${response.data.email}`;
+
             this.setState({ loading: false });
             this.props.login();
           } else {
             let response = JSON.parse(httpRequest.responseText);
+
             if (response.hasOwnProperty('errors')) {
               response.errors.map(err => createNotification('error', response.errors));
             } else if (response.hasOwnProperty('error')) {
@@ -180,30 +142,13 @@ class Login extends Component {
             } else {
               createNotification('error', response.message)
             }
+            
             this.setState({ loading: false });
           }
         }
       } catch (e) {
         console.error(`Caught error: `, e);
       }
-    }
-  }
-  showPass() {
-    let iconEl = document.getElementById('pass-icon');
-    if (iconEl.classList.contains('fa-eye-slash')) {
-      iconEl.classList.remove('fa-eye-slash');
-      iconEl.classList.add('fa-eye');
-    } else {
-      iconEl.classList.remove('fa-eye');
-      iconEl.classList.add('fa-eye-slash');
-    }
-    let passInputEl = document.getElementById('password');
-    if (passInputEl.type === 'password') {
-      passInputEl.type = 'text';
-      passInputEl.style.fontSize = "22px";
-    } else {
-      passInputEl.type = 'password';
-      passInputEl.style.fontSize = "16px";
     }
   }
   componentDidMount() {
