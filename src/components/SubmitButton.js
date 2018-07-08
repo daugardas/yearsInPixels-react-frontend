@@ -25,7 +25,8 @@ class SubmitButton extends Component {
     const { classes, children } = this.props;
     return <button type="submit" onClick={this.handleClick.bind(this)} className={classes.submitButton}>{children}</button>
   }
-  handleClick() {
+  handleClick(e) {
+    e.preventDefault();
     const { onClick } = this.props;
     onClick();
   }
