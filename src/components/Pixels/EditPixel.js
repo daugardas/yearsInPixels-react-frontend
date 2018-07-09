@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import injectSheet from 'react-jss';
 
+import formatDate from '../../functions/formatDate';
+
 const styles = {
   container: {
     width: `400px`
@@ -187,7 +189,7 @@ class EditPixel extends Component {
     super(props);
     this.state = {
       date: this.props.date,
-      formattedDate: this.formatDate(`#YYYY#-#MM#-#DD#`, new Date(this.props.date)),
+      formattedDate: formatDate(`#YYYY#-#MM#-#DD#`, new Date(this.props.date)),
       dayID: this.props.dayID,
       journal: this.props.journal,
       moods: this.props.moods ? this.props.moods : [{ moodId: this.props.userMoods[0].moodID, percentage: 100 }],
@@ -198,7 +200,6 @@ class EditPixel extends Component {
         visibility: `hidden`
       }
     };
-    this.formatDate = this.formatDate.bind(this);
     this.handleEditPixelClick = this.handleEditPixelClick.bind(this);
     this.addNewEmotion = this.addNewEmotion.bind(this);
     this.handleJournalChange = this.handleJournalChange.bind(this);
@@ -575,22 +576,12 @@ class EditPixel extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       date: nextProps.date,
-      formattedDate: this.formatDate(`#YYYY#-#MM#-#DD#`, new Date(nextProps.date)),
+      formattedDate: formatDate(`#YYYY#-#MM#-#DD#`, new Date(nextProps.date)),
       dayID: nextProps.dayID,
       journal: nextProps.journal,
       moods: nextProps.moods ? nextProps.moods : [{ moodId: nextProps.userMoods[0].moodID, percentage: 100 }],
       editPixel: false
     });
-  }
-  formatDate(formatString, date) {
-    var YYYY, MM, DD, hhhh, mm;
-    YYYY = date.getFullYear()
-    MM = date.getMonth() + 1 < 10 ? (`0` + (date.getMonth() + 1)) : date.getMonth() + 1;
-    DD = date.getDate() < 10 ? (`0` + date.getDate()) : date.getDate();
-    formatString = formatString.replace("#YYYY#", YYYY).replace("#MM#", MM).replace("#DD#", DD);
-    hhhh = date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours();
-    mm = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
-    return formatString.replace("#hhhh#", hhhh).replace("#mm#", mm);
   }
   componentDidUpdate() {
     this.props.resizeBackground();

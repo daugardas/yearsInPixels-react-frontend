@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import injectSheet from 'react-jss';
 
+import formatDate from '../../functions/formatDate';
+
 const styles = {
   container: {
     width: `400px`
@@ -128,12 +130,12 @@ class NewPixel extends Component {
     super(props);
     this.addNewEmotion = this.addNewEmotion.bind(this);
     this.handleJournalChange = this.handleJournalChange.bind(this);
-    this.formatDate = this.formatDate.bind(this);
     this.submitPixelData = this.submitPixelData.bind(this);
     let date = this.props.date ? new Date(this.props.date) : new Date();
+
     this.state = {
       date: date.setHours(0, 0, 0, 0),
-      dateInputValue: this.formatDate(`#YYYY#-#MM#-#DD#`, date),
+      dateInputValue: formatDate(`#YYYY#-#MM#-#DD#`, date),
       emotions: [
         { moodId: this.props.userMoods[0].moodID, percentage: 100 }
       ],
@@ -318,7 +320,7 @@ class NewPixel extends Component {
     let date = nextProps.date ? new Date(nextProps.date) : new Date();
     this.setState({
       date: date.setHours(0, 0, 0, 0),
-      dateInputValue: this.formatDate(`#YYYY#-#MM#-#DD#`, date),
+      dateInputValue: formatDate(`#YYYY#-#MM#-#DD#`, date),
       addNewEmotions: true,
       journal: "",
       emotions: [
@@ -326,16 +328,6 @@ class NewPixel extends Component {
       ],
     })
   }
-  formatDate(formatString, date) {
-    var YYYY, MM, DD, hhhh, mm;
-    YYYY = date.getFullYear()
-    MM = date.getMonth() + 1 < 10 ? (`0` + (date.getMonth() + 1)) : date.getMonth() + 1;
-    DD = date.getDate() < 10 ? (`0` + date.getDate()) : date.getDate();
-    formatString = formatString.replace("#YYYY#", YYYY).replace("#MM#", MM).replace("#DD#", DD);
-    hhhh = date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours();
-    mm = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
-    return formatString.replace("#hhhh#", hhhh).replace("#mm#", mm);
-  };
   submitPixelData() {
     const { createNotification } = this.props;
     if (this.state.emotions[0].moodId !== undefined) {
