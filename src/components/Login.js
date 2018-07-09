@@ -81,11 +81,11 @@ class Login extends Component {
       <form method="post">
         <div className={classes.inputContainer}>
           <label htmlFor="username">Username:</label>
-          <TextInput onChange={this.handleUsernameChange.bind(this)} value={username} />
+          <TextInput required onChange={this.handleUsernameChange.bind(this)} value={username} />
         </div>
         <div className={classes.inputContainer}>
           <label htmlFor="password">Password:</label>
-          <PasswordInput value={password} onChange={this.handlePasswordChange.bind(this)}/>
+          <PasswordInput required value={password} onChange={this.handlePasswordChange.bind(this)}/>
         </div>
         <SubmitButton onClick={this.login}>Login</SubmitButton>
         <div className={classes.forgot}><NavLink to="/forgot">Forgot your password?</NavLink></div>

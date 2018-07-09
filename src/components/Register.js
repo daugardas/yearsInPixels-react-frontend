@@ -60,19 +60,19 @@ class Register extends Component {
         <form method="post">
           <div className={classes.inputContainer}>
             <label htmlFor="username">Username:</label>
-            <TextInput onChange={this.handleUsernameChange.bind(this)} value={username} />
+            <TextInput required onChange={this.handleUsernameChange.bind(this)} value={username} />
           </div>
           <div className={classes.inputContainer}>
             <label htmlFor="email">Email:</label>
-            <EmailInput onChange={this.handleEmailChange.bind(this)} value={email} />
+            <EmailInput required onChange={this.handleEmailChange.bind(this)} value={email} />
           </div>
           <div className={classes.inputContainer}>
             <label htmlFor="password">Password:</label>
-            <PasswordInput value={password} onChange={this.handlePassChange.bind(this)} />
+            <PasswordInput required value={password} onChange={this.handlePassChange.bind(this)} />
           </div>
           <div className={classes.inputContainer}>
             <label htmlFor="conf-password">Confirm password:</label>
-            <PasswordInput value={confPassword} onChange={this.handleConfPassChange.bind(this)} />
+            <PasswordInput required value={confPassword} onChange={this.handleConfPassChange.bind(this)} />
           </div>
           <Recaptcha
             className={classes.recaptcha}
