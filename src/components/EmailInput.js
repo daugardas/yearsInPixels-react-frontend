@@ -23,8 +23,8 @@ const styles = {
 
 class EmailInput extends Component {
   render(){
-    const { classes, value } = this.props;
-    return <input required className={classes.input} type="email" value={value} onChange={this.handleChange.bind(this)} />
+    const { classes, value, required } = this.props;
+    return <input required={required} className={classes.input} type="email" value={value} onChange={this.handleChange.bind(this)} />
   }
   handleChange(e){
     const { onChange } = this.props;

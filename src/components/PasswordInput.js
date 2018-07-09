@@ -63,13 +63,13 @@ class PasswordInput extends Component {
   }
   render() {
     const { hidden } = this.state;
-    const { classes, value } = this.props;
+    const { classes, value, required } = this.props;
     return (
       <div className={classes.container}>
         <div className={classes.iconContainer}>
           <i className={`fas ${hidden ? 'fa-eye-slash' : 'fa-eye'} hide`} onClick={this.handleVisibility.bind(this)}></i>
         </div>
-        <input required className={`${classes.inputPass} ${hidden ? classes.hiddenFontSize : classes.shownFontSize}`} type={hidden ? 'password' : 'text'} value={value} onChange={this.handleChange.bind(this)} />
+        <input required={required} className={`${classes.inputPass} ${hidden ? classes.hiddenFontSize : classes.shownFontSize}`} type={hidden ? 'password' : 'text'} value={value} onChange={this.handleChange.bind(this)} />
       </div>
     );
   }
