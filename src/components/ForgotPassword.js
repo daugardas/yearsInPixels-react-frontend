@@ -1,142 +1,63 @@
 import React, { Component } from 'react';
 import injectSheet from 'react-jss';
 
-import Loader from './Loader';
+import SubmitButton from './SubmitButton'
+import EmailInput from './Inputs/EmailInput';
+import InputContainer from './Inputs/InputContainer';
+import TextInput from './Inputs/TextInput';
+
+import { connect } from 'react-redux';
+import { forgot, emailChange, usernameChange } from '../actions/passwordActions';
 
 const styles = {
   container: {
-    display: `block`,
-    margin: `auto`,
-    position: `absolute`,
-    width: `auto`,
-    top: `50%`,
-    left: `50%`,
-    transform: `translate(-50%, -50%)`,
-    height: `auto`,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 180, 
+    position: 'relative',
+    width: 'max-content',
+    left: '50%',
+    transform: 'translateX(-50%)',
     '& form': {
       display: `flex`,
       flexDirection: `column`
     }
   },
-  inputContainer: {
-    width: `auto`,
-    margin: `12px 0`,
-    '& label': {
-      fontSize: `35px`,
-      color: `#364d6b`
-    }
-  },
-  input: {
-    fontFamily: `'Indie Flower', cursive`,
-    float: `right`,
-    fontSize: `22px`,
-    marginLeft: `20px`,
-    background: `#f3fbff`,
-    width: `290px`,
-    borderRadius: `25px`,
-    border: `1px solid #d8efff`,
-    padding: `5px 10px 5px 15px`,
-    lineHeight: `35px`,
-    caretColor: `#a1d2ff`,
-    transition: `box-shadow 0.5s ease`,
-    '&:focus': {
-      boxShadow: `0px 0px 0px 2px #a9dbff`
-    }
-  },
-  button: {
-    padding: `10px`,
-    width: `130px`,
-    backgroundColor: `#eef9ff`,
-    fontSize: `25px`,
-    margin: `0 10px`,
-    border: `5px solid #dbf0ff`,
-    borderRadius: `30px`,
-    transition: `font-weight 0.3s ease, transform 0.3s ease, color 0.3s ease`,
-    alignSelf: `center`,
-    '&:hover': {
-      fontWeight: `700`,
-      cursor: `pointer`,
-      transform: `scale(1.02)`
+  or: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    '& span': {
+      fontSize: 30
     }
   }
+  /* will add mobile support */
 };
 
 export class ForgotPassword extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: false
-    };
-    this.forgot = this.forgot.bind(this);
-  }
   render() {
-    const { classes } = this.props;
-    const form = this.state.loading ? <Loader /> : (
-      <form method="post">
-        <div className={classes.inputContainer}>
-          <input required id="user-or-email" className={classes.input} name="user-or-email" type="text" placeholder="Enter your email or username" />
-        </div>
-        <button type="submit" onClick={this.forgot} className={classes.button}>Submit</button>
-      </form>
-    );
+    const { classes, email, username } = this.props;
+
     return (
       <div className={classes.container}>
-        {form}
+        <form method="post">
+          <InputContainer label='Email:'>
+            <EmailInput value={email} onChange={emailChange} />
+          </InputContainer>
+          <div className={classes.or}><span>OR</span></div>
+          <InputContainer label='Username:'>
+            <TextInput value={username} onChange={usernameChange} />
+          </InputContainer>
+          <SubmitButton onClick={forgot}>Submit</SubmitButton>
+        </form>
       </div>
     );
   }
-  forgot(e) {
-    const { createNotification } = this.props;
-    e.preventDefault();
-    this.setState({ loading: true });
-    document.getElementById('messages').innerHTML = "";
-    let input = document.getElementById('user-or-email').value;
-    let makeRequest = true;
-    let req = {};
-    // check email if it's an email
-    let emailRegEx = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (emailRegEx.test(input)) {
-      req.email = input;
-    } else if (input === "") {
-      makeRequest = false;
-    } else {
-      req.username = input;
-    }
-    if (makeRequest) {
-      let httpRequest = new XMLHttpRequest();
-      httpRequest.open('POST', `https://api.yearsinpixels.com/api/forgot`, true);
-      httpRequest.setRequestHeader("Content-Type", "application/json");
-      httpRequest.send(JSON.stringify(req));
-      httpRequest.onreadystatechange = () => {
-        try {
-          if (httpRequest.readyState === XMLHttpRequest.DONE) {
-            if (httpRequest.status === 200) {
-              let response = JSON.parse(httpRequest.responseText);
-              createNotification('success', response.message);
-            } else {
-              let response = JSON.parse(httpRequest.responseText);
-              if (response.hasOwnProperty('errors')) {
-                response.errors.map(err => createNotification('error', err));
-              } else if (response.hasOwnProperty('error')) {
-                createNotification('error', response.error)
-              } else {
-                createNotification('error', response.message)
-              }
-            }
-            this.setState({ loading: false });
-          }
-        } catch (e) {
-          console.error(`Caught error: `, e);
-          this.setState({ loading: false });
-        }
-      }
-    } else {
-      this.setState({ loading: false });
-    }
-  }
-  componentDidMount() {
-    this.props.resizeBackground();
-  }
 }
 
-export default injectSheet(styles)(ForgotPassword);
+function mapStateToProps(state) {
+  return { email: state.forgot.email, username: state.forgot.username }
+}
+
+export default connect(mapStateToProps)(injectSheet(styles)(ForgotPassword));

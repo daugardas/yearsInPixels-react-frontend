@@ -3,9 +3,11 @@ import { NavLink } from 'react-router-dom';
 import injectSheet from 'react-jss';
 
 import Loader from './Loader';
-import TextInput from './TextInput';
-import PasswordInput from './PasswordInput';
+import TextInput from './Inputs/TextInput';
+import PasswordInput from './Inputs/PasswordInput';
 import SubmitButton from './SubmitButton';
+
+import { login } from '../actions/LoginActions';
 
 const styles = {
   container: {
@@ -68,7 +70,6 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
       username: '',
       password: ''
     };
@@ -104,54 +105,8 @@ class Login extends Component {
     this.setState({ password: val});
   }
   login() {
-    this.setState({ loading: true });
-    const { createNotification } = this.props;
     const { username, password } = this.state;
-    
-    let user = {
-      username: username,
-      password: password,
-    }
-
-    let httpRequest = new XMLHttpRequest();
-    httpRequest.open('POST', `https://api.yearsinpixels.com/api/login`, true);
-    httpRequest.setRequestHeader("Content-Type", "application/json");
-    httpRequest.send(JSON.stringify(user));
-    httpRequest.onreadystatechange = () => {
-      try {
-        if (httpRequest.readyState === XMLHttpRequest.DONE) {
-          if (httpRequest.status === 200) {
-            let response = JSON.parse(httpRequest.responseText);
-
-            document.cookie = `token=${response.token}`;
-            document.cookie = `username=${response.data.username}`;
-            document.cookie = `userID=${response.data.id}`;
-            document.cookie = `userCreated=${response.data.dateCreated}`;
-            document.cookie = `userEmail=${response.data.email}`;
-
-            this.setState({ loading: false });
-            this.props.login();
-          } else {
-            let response = JSON.parse(httpRequest.responseText);
-
-            if (response.hasOwnProperty('errors')) {
-              response.errors.map(err => createNotification('error', response.errors));
-            } else if (response.hasOwnProperty('error')) {
-              createNotification('error', response.error)
-            } else {
-              createNotification('error', response.message)
-            }
-            
-            this.setState({ loading: false });
-          }
-        }
-      } catch (e) {
-        console.error(`Caught error: `, e);
-      }
-    }
-  }
-  componentDidMount() {
-    this.props.resizeBackground();
+    login({username, password});
   }
 }
 

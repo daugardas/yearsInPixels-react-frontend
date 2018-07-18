@@ -4,32 +4,20 @@
 * {
   margin: 0;
   padding: 0;
-  outline: none;
-  --new-emotion-fontSize: 24px;
-  --day-number-fontSize: 24px;
-  --pixel-size: 30px;
-  --day-pixel-size: 28px;
-  --day-inline-border-size: 24px;
-  --pixel-grid-fontSize: 20px;
-  --nav-item-fontSize: 45px;
-  --pixel-grid-marginLeft: 120px;
+  outline: none; 
   --green: #73E673;
   --green-hovered: #59B359;
-  --remove-icon-fontSize: 21px;
-  --date-label-fontSize: 30px;
-  --date-input-fontSize: 30px;
   --slightDarkBlue: #8AB2E6;
   --blue: #4D6E99;
   --lightBlue: #dbf0fd;
   --nearWhiteBlue: #FAFDFF;
   --darkBlue: #364d6b;
-  --indie-flower-font: 'Indie Flower', cursive !important;
-  --amatic-font: 'Amatic SC', cursive;
-  --journal-fontSize: 18px;
-  --saved-journal-fontSize: 20px;
-  --emotion-fontSize: 30px;
-  --save-icon-fontSize: 35px;
-  font-family: var(--amatic-font);
+  font-family: 'Amatic SC', cursive;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
 }
 
 input[type=range] {

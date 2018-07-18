@@ -20,35 +20,32 @@ const styles = {
 };
 
 class Month extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      monthDate: new Date(this.props.date)
-    };
-  }
   render() {
-    const { monthDate } = this.state;
-    let monthDaysCount = new Date(new Date(monthDate).setFullYear(monthDate.getFullYear(), monthDate.getMonth() + 1, 0)).getDate();
+    const monthDate = new Date(this.props.date);
+    const { classes, pixels, moods, selected } = this.props;
+
+    const monthDaysCount = new Date(new Date(monthDate).setFullYear(monthDate.getFullYear(), monthDate.getMonth() + 1, 0)).getDate();
     let monthDays = new Array(monthDaysCount);
-    const { pixelMoods, classes } = this.props;
+
     for (let i = 1; i <= monthDaysCount; i++) { // for every day in a month
-      let dayDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), i).getTime();
+      const dayDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), i).getTime();
       let mood;
-      if (pixelMoods !== undefined) { // if there exists moods with a correct month to that mood
-        for (let j = 0; j < pixelMoods.length; j++) { // loop through those moods
-          if (+pixelMoods[j].date === +dayDate) { // check if mood date equal a day date
-            mood = pixelMoods[j];
+      if (pixels !== undefined) { // if there exists moods with a correct month to that mood
+        for (let j = 0; j < pixels.length; j++) { // loop through those moods
+          if (+pixels[j].date === +dayDate) { // check if mood date equal a day date
+            mood = pixels[j];
           }
         }
       }
-      monthDays[i - 1] = { mood: mood, dayDate: dayDate }
+      monthDays[i - 1] = { mood, date: dayDate }
     }
+
     return (
       <div className={classes.container}>
         <div className={classes.name}>{monthDate.toDateString().split(' ')[1]}</div>
         {
           monthDays.map((day, index) => {
-            return <Day editPixel={this.props.editPixel} key={index} date={day.dayDate} userMoods={this.props.userMoods} pixelMoods={day.mood} />
+            return <Day key={index} date={day.date} moods={moods} pixel={day.mood} selected={selected} />
           })
         }
       </div>

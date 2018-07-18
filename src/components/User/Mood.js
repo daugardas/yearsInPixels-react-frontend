@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import injectSheet from 'react-jss';
 
+import { deleteMood, editMood } from '../../actions/UserActions';
+
 const styles = {
   container: {
     display: `flex`,
@@ -81,7 +83,6 @@ class Mood extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      removed: false,
       edit: false,
       moodName: this.props.mood.moodName,
       moodColor: this.props.mood.moodColor
@@ -94,6 +95,7 @@ class Mood extends Component {
   }
   render() {
     const { classes } = this.props;
+    const { removed } = this.props.mood;
     let mood = this.state.edit ? (
       <div className={classes.container}>
         <input type="text" defaultValue={this.state.moodName} className={classes.nameInput} id="edit-mood-name-input" placeholder="Enter pixels name" onChange={this.handleNameChange} />
@@ -109,7 +111,7 @@ class Mood extends Component {
           <i className={`fas fa-trash-alt ${classes.removeIcon}`} onClick={this.removeMood}></i>
         </div>
       );
-    let element = this.state.removed ? null : mood;
+    let element = removed ? null : mood;
     return element;
   }
   handleEditClick() {
@@ -122,89 +124,14 @@ class Mood extends Component {
     this.setState({ moodColor: event.target.value });
   }
   removeMood() {
-    this.setState({ removed: true });
-    const { createNotification } = this.props;
-    // eslint-disable-next-line
-    let token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-    let httpRequest = new XMLHttpRequest();
-    let remove = {
-      moodID: this.props.mood.moodID
-    };
-    httpRequest.open('DELETE', `https://api.yearsinpixels.com/api/user/mood`, true);
-    httpRequest.setRequestHeader("Content-Type", "application/json");
-    httpRequest.setRequestHeader("x-access-token", token);
-    httpRequest.send(JSON.stringify(remove));
-    httpRequest.onreadystatechange = () => {
-      try {
-        if (httpRequest.readyState === XMLHttpRequest.DONE) {
-          if (httpRequest.status === 200) {
-            // do nothing
-          } else {
-            let response = JSON.parse(httpRequest.responseText);
-            if (response.hasOwnProperty('error')) {
-              createNotification('error', response.error);
-            } else {
-              createNotification('error', response.message);
-            }
-            this.setState(prevState => {
-              return {removed: false};
-            });
-          }
-        }
-      } catch (e) {
-        console.error(`Caught error: `, e);
-      }
-    }
+    const { mood } = this.props;
+    deleteMood(mood.moodID);
   }
   editMood() {
-    const { createNotification } = this.props;
-    let makeRequest = true;
-    if (this.state.moodName === '') {
-      makeRequest = false;
-      document.getElementById('edit-mood-name-input').setCustomValidity("Enter pixels name!");
-      createNotification('error', "Enter pixels name!");
-    } else if (this.state.moodName.length > 50) {
-      makeRequest = false;
-      document.getElementById('edit-mood-name-input').setCustomValidity("Pixels name can't be longer than 50 characters!");
-      createNotification('error', "Pixels name can't be longer than 50 characters!");
-    }
-    if (makeRequest) {
-      // eslint-disable-next-line
-      let token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-      let httpRequest = new XMLHttpRequest();
-      let mood = {
-        moodName: this.state.moodName,
-        moodColor: this.state.moodColor,
-        moodID: this.props.mood.moodID
-      };
-      httpRequest.open('PUT', `https://api.yearsinpixels.com/api/user/mood`, true);
-      httpRequest.setRequestHeader("Content-Type", "application/json");
-      httpRequest.setRequestHeader("x-access-token", token);
-      httpRequest.send(JSON.stringify(mood));
-      httpRequest.onreadystatechange = () => {
-        try {
-          if (httpRequest.readyState === XMLHttpRequest.DONE) {
-            if (httpRequest.status === 200) {
-              this.setState({
-                edit: false,
-              })
-            } else {
-              let response = JSON.parse(httpRequest.responseText);
-              if (response.hasOwnProperty('errors')) {
-                response.errors.map(err => createNotification('error', err));
-              } else if (response.hasOwnProperty('error')) {
-                createNotification('error', response.error)
-              } else {
-                createNotification('error', response.message)
-              }
-            }
-            this.props.renderMessages();
-          }
-        } catch (e) {
-          console.error(`Caught error: `, e);
-        }
-      }
-    }
+    this.handleEditClick();
+    editMood(this.props.mood.moodID, this.state.moodName, this.state.moodColor).then(() => {
+      this.setState({ edit: false})
+    })
   }
 }
 

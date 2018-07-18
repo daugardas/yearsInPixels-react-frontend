@@ -29,7 +29,7 @@ const styles = {
 class SubmitButton extends Component {
   render() {
     const { classes, children, warning } = this.props;
-    return <button type="submit" onClick={this.handleClick.bind(this)} className={`${classes.button} ${warning ? classes.warning : classes.default}`}>{children}</button>
+    return <button type="button" onClick={this.handleClick.bind(this)} className={`${classes.button} ${warning ? classes.warning : classes.default}`}>{children}</button>
   }
   handleClick(e) {
     e.preventDefault();

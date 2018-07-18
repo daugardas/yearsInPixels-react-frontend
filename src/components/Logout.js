@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import injectSheet from 'react-jss';
+import { logout } from '../actions/LogoutActions';
 
 const styles = {
   container: {
@@ -65,10 +66,8 @@ const styles = {
 };
 
 class Logout extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { redirect: false };
-    this.handleRedirect = this.handleRedirect.bind(this);
+  state = {
+    redirect: false
   }
   redirect() {
     if (this.state.redirect) {
@@ -85,14 +84,11 @@ class Logout extends Component {
         <div className={classes.label}>Are you sure you want to log out?</div>
         <div className={classes.buttonContainer}>
           {this.redirect()}
-          <button type="button" onClick={this.props.logOut} className={classes.confirm}>Log out</button>
-          <button type="button" onClick={this.handleRedirect} className={classes.cancel}>Cancel</button>
+          <button type="button" onClick={logout} className={classes.confirm}>Log out</button>
+          <button type="button" onClick={this.handleRedirect.bind(this)} className={classes.cancel}>Cancel</button>
         </div>
       </div>
     );
-  }
-  componentDidMount() {
-    this.props.resizeBackground();
   }
 }
 

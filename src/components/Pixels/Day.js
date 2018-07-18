@@ -1,104 +1,171 @@
 import React, { Component } from 'react';
 import injectSheet from 'react-jss';
 
+import { setSelected } from '../../actions/PixelsActions';
+
 const styles = {
   container: {
-    width: `28px`,
-    height: `28px`,
-    display: `flex`,
-    alignItems: `center`,
-    justifyContent: `center`,
+    width: 28,
+    height: 28,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  border: {
+    width: 24,
+    height: 24,
   },
   hoverBorder: {
-    width: `24px`,
-    height: `24px`,
     '&:hover': {
-      border: `2px solid #363636`,
-      cursor: `pointer`
+      border: '2px solid #363636',
+      cursor: 'pointer'
     }
   },
   blockEdit: {
-    cursor: `not-allowed !important`,
+    cursor: 'not-allowed !important',
     '&:hover': {
-      cursor: `not-allowed !important`
+      cursor: 'not-allowed !important'
     }
+  },
+  today: {
+    border: '2px solid #cc2851'
+  },
+  selected: {
+    border: '2px solid #363636',
   }
 };
 
 class Day extends Component {
   constructor(props) {
     super(props);
+    this.now = new Date().setHours(0, 0, 0, 0);
     this.state = {
-      moodDayID: null,
-      moods: null,
-      journal: "",
-      background: `transparent`,
-      allowEdit: false
+      background: 'transparent',
+      allowEdit: this.now >= props.date ? true : false,
+      selected: false
     }
-    this.handleEditClick = this.handleEditClick.bind(this);
   }
   render() {
-    const { classes } = this.props;
-    let dayStyles = {
-      background: this.state.background
-    };
+    const { classes, date } = this.props;
+    const { background, allowEdit, selected } = this.state;
     return (
-      <div className={classes.container} style={dayStyles} onClick={this.handleEditClick}>
-        <div className={`${classes.hoverBorder} ${!this.state.allowEdit ? classes.blockEdit : ''}`} ></div>
+      <div className={classes.container} style={{ background: background }} onClick={this.handleEditClick.bind(this)}>
+        <div className={`${classes.border} ${classes.hoverBorder} ${selected ? classes.selected: ''} ${this.now === date ? classes.today : ''} ${!allowEdit ? classes.blockEdit : ''}`} ></div>
       </div>
     );
   }
-  componentWillMount() {
-    const { pixelMoods, userMoods } = this.props;
-    const todayTime = new Date().setHours(0, 0, 0, 0);
-
-    this.setState({
-      allowEdit: todayTime >= this.props.date ? true : false
-    });
-
-    if (pixelMoods !== undefined) {
-      this.setState({
-        moodDayID: pixelMoods.id,
-        moods: pixelMoods.dayMoods,
-        journal: pixelMoods.journal === null ? "" : pixelMoods.journal
-      });
-
-      // if this component day equals to todays date
-      // then call editPixel() to show already set moods
-      if (this.props.date === todayTime) {
-        let journal = pixelMoods.journal === null ? "" : pixelMoods.journal;
-        this.props.editPixel(pixelMoods.id, pixelMoods.dayMoods, journal, this.props.date);
-      }
-
-      // generate background for the day component
-      const moods = pixelMoods.dayMoods;
-      let colors = ``;
-      let colorsCounter = 0;
-      let previousPercentage;
-      for (let i = 0; i < userMoods.length; i++) {
-        let userMood = userMoods[i];
-        for (let j = 0; j < moods.length; j++) {
-          let mood = moods[j];
-          if (mood.moodId.toString() === userMood.moodID.toString()) {
-            if (colorsCounter === 0) {
-              colors += `${userMood.moodColor},${userMood.moodColor} ${mood.percentage}%`;
-              previousPercentage = mood.percentage;
-              colorsCounter++;
-            } else {
-              colors += `, ${userMood.moodColor} ${previousPercentage}%,${userMood.moodColor} ${previousPercentage + mood.percentage}%`;
-              previousPercentage += mood.percentage;
-            }
-            this.setState({
-              background: `linear-gradient(135deg, ${colors})`
-            });
+  generateBackground(dayMoods) {
+    const { moods } = this.props;
+    let colors = ``;
+    let colorsCounter = 0;
+    let previousPercentage;
+    for (let i = 0; i < moods.length; i++) {
+      let mood = moods[i];
+      for (let j = 0; j < dayMoods.length; j++) {
+        let day = dayMoods[j];
+        if (day.moodId.toString() === mood.moodID.toString()) {
+          if (colorsCounter === 0) {
+            colors += `${mood.moodColor},${mood.moodColor} ${+day.percentage}%`;
+            previousPercentage = +day.percentage;
+            colorsCounter++;
+          } else {
+            colors += `, ${mood.moodColor} ${previousPercentage}%,${mood.moodColor} ${previousPercentage + +day.percentage}%`;
+            previousPercentage += +day.percentage;
           }
+
         }
       }
+    }
+    this.setState({
+      background: `linear-gradient(135deg, ${colors})`
+    });
+  }
+  removeBackground() {
+    this.setState({
+      background: 'transparent'
+    })
+  }
+  componentWillReceiveProps(props) {
+    const { selected, date, pixel } = props;
+    if (selected.date === date) {
+      this.setState({ selected: true})
+      if (selected.id !== '' || selected.changed) {
+        const moods = selected.moods.map(mood => { return { moodId: mood.id, percentage: +mood.percentage } });
+        this.generateBackground(moods);
+      } else if (pixel) {
+        this.generateBackground(pixel.dayMoods);
+        const { moods } = props;
+        const dayMoods = pixel.dayMoods.map(dayMood => {
+          let newDayMood = {};
+
+          for (let i = 0; i < moods.length; i++) {
+            const mood = moods[i];
+            if (dayMood.moodId === mood.moodID) {
+              newDayMood = { id: dayMood.moodId, percentage: dayMood.percentage, color: mood.moodColor, name: mood.moodName };
+              break;
+            }
+          };
+
+          return newDayMood;
+        });
+
+        setSelected(date, pixel.id, dayMoods, pixel.journal);
+      } else {
+        this.removeBackground();
+      }
+
+    } else {
+      this.setState({ selected: false })
+    }
+  }
+
+  componentWillMount() {
+    const { pixel, date, moods } = this.props;
+
+    if (pixel && date === this.now) {
+      const dayMoods = pixel.dayMoods.map(dayMood => {
+        let newDayMood = {};
+        for (let i = 0; i < moods.length; i++) {
+          const mood = moods[i];
+          if (dayMood.moodId === mood.moodID) {
+            newDayMood = { id: dayMood.moodId, percentage: dayMood.percentage, color: mood.moodColor, name: mood.moodName };
+            break;
+          }
+        }
+
+        return newDayMood;
+      });
+
+      setSelected(date, pixel.id, dayMoods, pixel.journal);
+    } else if (date === this.now) {
+      setSelected(date);
+    }
+
+    if (pixel) {
+      this.generateBackground(pixel.dayMoods);
     }
   }
   handleEditClick() {
     if (this.state.allowEdit) {
-      this.props.editPixel(this.state.moodDayID, this.state.moods, this.state.journal, this.props.date);
+      const { moods, pixel, date } = this.props;
+      if (pixel) {
+        const dayMoods = pixel.dayMoods.map(dayMood => {
+          let newDayMood = {};
+          for (let i = 0; i < moods.length; i++) {
+            const mood = moods[i];
+            if (dayMood.moodId === mood.moodID) {
+              newDayMood = { id: dayMood.moodId, percentage: dayMood.percentage, color: mood.moodColor, name: mood.moodName };
+              break;
+            }
+          }
+
+          return newDayMood;
+        });
+
+        setSelected(date, pixel.id, dayMoods, pixel.journal);
+      } else {
+        setSelected(date);
+      }
     }
   }
 }

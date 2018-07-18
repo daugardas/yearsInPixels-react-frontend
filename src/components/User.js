@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import injectSheet from 'react-jss';
 
+import { connect } from 'react-redux';
 import AppSettings from './User/AppSettings';
 import ProfileSettings from './User/ProfileSettings';
 
@@ -16,15 +17,17 @@ const styles = {
 
 class User extends Component {
   render() {
-    const { classes, username, userEmail, userCreated, createNotification, removeNotifications, removeAccInfo, updateStates } = this.props;
+    const { classes, user } = this.props;
+    
     return <div className={classes.container}>
-      <ProfileSettings createNotification={createNotification} username={username} email={userEmail} created={userCreated} removeAccInfo={removeAccInfo} updateStates={updateStates}/>
-      <AppSettings removeNotifications={removeNotifications} createNotification={createNotification} />
+      <ProfileSettings user={user}/>
+      <AppSettings moods={user.moods} />
     </div>
-  }
-  componentDidMount() {
-    this.props.resizeBackground();
   }
 }
 
-export default injectSheet(styles)(User);
+function mapStateToProps(state) {
+  return { user: state.user }
+}
+
+export default connect(mapStateToProps)(injectSheet(styles)(User));

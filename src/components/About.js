@@ -75,9 +75,6 @@ class About extends Component {
       </div>
     );
   }
-  componentDidMount() {
-    this.props.resizeBackground();
-  }
 }
 
 export default injectSheet(styles)(About)
