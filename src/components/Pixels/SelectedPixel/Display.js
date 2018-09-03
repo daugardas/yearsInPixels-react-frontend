@@ -9,10 +9,12 @@ class Display extends Component {
   render() {
     const { selectedPixel } = this.props;
     const { moods, journal } = selectedPixel;
-    return <div>
-      <FeltMoods moods={moods} />
-      <Journal journal={journal} />
-    </div>
+    // return <div>
+    //   <FeltMoods moods={moods} />
+    //   <Journal journal={journal} />
+    // </div>
+
+    return [<FeltMoods moods={moods} />, <Journal journal={journal} />]
   }
 }
 

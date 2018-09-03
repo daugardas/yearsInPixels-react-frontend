@@ -5,6 +5,9 @@ import DesktopNav from './Nav/DesktopNav';
 import MobileNav from './Nav/MobileNav';
 import NavBars from './Nav/NavBars';
 
+import { connect } from 'react-redux';
+import { linkClick, displayChange } from '../actions/mobileNavActions';
+
 const styles = {
   container: {
     display: `flex`,
@@ -23,29 +26,20 @@ const styles = {
 };
 
 class Nav extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      width: window.innerWidth,
-      displayMobileNav: false
-    }
-  }
   render() {
-    const { width, displayMobileNav } = this.state;
-    const { classes, logged, username } = this.props;
+    const { classes, logged, username, displayMobileNav, width } = this.props;
     return (
       <nav className={classes.container}>
-        <NavBars onClick={this.displayNav.bind(this)} />
-        {width < 1024 ? <MobileNav display={displayMobileNav} logged={logged} width={width} username={username}/> : <DesktopNav logged={logged} username={username} />}
+        <NavBars onClick={displayChange} clicked={displayMobileNav} width={width} />
+        {width < 1024 ? <MobileNav display={displayMobileNav} logged={logged} width={width} username={username} onLinkClick={linkClick} /> : <DesktopNav logged={logged} username={username} />}
       </nav>
     );
   }
-  displayNav() {
-    this.setState(prevState => ({ displayMobileNav: !prevState.displayMobileNav }))
-  }
-  componentDidMount() {
-    window.addEventListener('resize', () => this.setState({ width: window.innerWidth }));
-  }
 }
 
-export default injectSheet(styles)(Nav);
+function mapStateToProps(state) {
+  const { displayMobileNav } = state;
+  return { displayMobileNav };
+}
+
+export default connect(mapStateToProps)(injectSheet(styles)(Nav));

@@ -11,23 +11,44 @@ import Buttons from './SelectedPixel/Buttons';
 import { deletePixel } from '../../actions/PixelsActions';
 
 const styles = {
-  container: {
+  default: {
     width: 400,
     position: 'relative'
   },
+  desktop: {
+    display: 'flex',
+    width: 'available',
+    justifyContent: 'center'
+  },
+  mobile: {
+
+  },
+  '@media (max-width: 1024px)': {
+    default: {
+      width: '95%'
+    }
+  }
 };
 
 class SelectedPixel extends Component {
 
   render() {
-    const { classes, moods, selectedPixel } = this.props;
-    return (
-      <div className={classes.container}>
+    const { classes, moods, selectedPixel, mode } = this.props;
+    return mode ? (
+      <div className={classes.default}>
         <Buttons display={!selectedPixel.edit} onEdit={this.handleEditClick.bind(this)} onRemove={this.removePixel} />
         <Date date={selectedPixel.date} />
         {selectedPixel.edit ? <Edit selectedPixel={selectedPixel} moods={moods} cancel={this.handleCancelClick.bind(this)} /> : <Display selectedPixel={selectedPixel} />}
       </div>
-    );
+    ) : (
+        <div className={classes.desktop}>
+          <div className={classes.default}>
+            <Buttons display={!selectedPixel.edit} onEdit={this.handleEditClick.bind(this)} onRemove={this.removePixel} />
+            <Date date={selectedPixel.date} />
+            {selectedPixel.edit ? <Edit selectedPixel={selectedPixel} moods={moods} cancel={this.handleCancelClick.bind(this)} /> : <Display selectedPixel={selectedPixel} />}
+          </div>
+        </div>
+      );
   }
   handleEditClick() {
     const { dispatch, selectedPixel } = this.props;

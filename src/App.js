@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import injectSheet from 'react-jss';
 
-import Footer from './components/Footer';
 import Logout from './components/Logout';
 import Nav from './components/Nav';
 import User from './components/User';
@@ -25,7 +24,7 @@ const styles = {}
 
 class App extends Component {
   render() {
-    const { username, loading, loggedIn, notes } = this.props;
+    const { username, loading, loggedIn, notes, width } = this.props;
     if (loading) {
       return <LoadingPage />;
     } else {
@@ -43,10 +42,6 @@ class App extends Component {
           <Switch>
             <Route exact path='/logout' render={() => <Redirect to="/" />} />
             <Route exact path='/profile' render={() => <Redirect to='/' />} />
-            {/* <Route path='/reset/:token' render={({ match }) => (
-              <Reset
-                token={match.params.token} />
-            )} /> */}
             <Route path='/reset/:token' component={Reset} />
             <Route path="/forgot" component={ForgotPassword} />
             <Route path="/login" component={Login} />
@@ -58,11 +53,10 @@ class App extends Component {
 
       return (
         <div id="App">
-          <Notifications notes={notes} /> {/* notes are just notifications, can't use it, cause that's component name */}
-          <BackgroundCanvas innerRef={(ref) => this.backgroundCanvas = ref} />
-          <Nav username={username} logged={loggedIn} />
-          <div style={{ marginTop: '60px' }}>{routes}</div>
-          <Footer />
+          <Notifications notes={notes} />
+          <BackgroundCanvas/>
+          <Nav username={username} logged={loggedIn} width={width} />
+          <div style={width > 1024 ? { marginTop: '60px' } : { marginTop: '45px'}}>{routes}</div>
         </div>
       );
     }
@@ -71,18 +65,11 @@ class App extends Component {
   componentWillMount() {
     tokenCheck();
   }
-
-  componentDidUpdate() {
-    if (!this.props.loading) {
-      this.backgroundCanvas.resize();
-    }
-
-  }
 }
 
 function mapStateToProps(state) {
-  const { loading, loggedIn, user, notifications } = state;
-  return { loading, loggedIn, username: user.username, notes: notifications };
+  const { loading, loggedIn, user, notifications, windowWidth } = state;
+  return { loading, loggedIn, username: user.username, notes: notifications, width: windowWidth };
 }
 
 export default withRouter(connect(mapStateToProps)(injectSheet(styles)(App)));

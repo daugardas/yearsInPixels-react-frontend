@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import injectSheet from 'react-jss';
 
-import Loader from './Loader';
+import Form from './FormContainer';
+import InputContainer from './Inputs/InputContainer';
 import TextInput from './Inputs/TextInput';
 import PasswordInput from './Inputs/PasswordInput';
 import SubmitButton from './SubmitButton';
@@ -10,58 +11,14 @@ import SubmitButton from './SubmitButton';
 import { login } from '../actions/LoginActions';
 
 const styles = {
-  container: {
-    display: `block`,
-    margin: `auto`,
-    position: `absolute`,
-    width: `auto`,
-    top: `50%`,
-    left: `50%`,
-    transform: `translate(-50%, -50%)`,
-    height: `auto`,
-    '& form': {
-      display: 'flex',
-      flexDirection: 'column'
-    }
-  },
-  inputContainer: {
-    width: `auto`,
-    margin: `12px 0`,
-    '& label': {
-      fontSize: `35px`,
-      color: `#364d6b`
-    }
-  },
-  iconContainer: {
-    display: `flex`,
-    float: `right`,
-    width: `40px`,
-    height: `45.5px`,
-    background: `#f3fbff`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    border: `1px solid #d8efff`,
-    borderRadius: `25px`,
-    borderTopLeftRadius: `0`,
-    borderBottomLeftRadius: `0`,
-    '& i': {
-      cursor: `pointer`,
-      margin: `0 10px`,
-      color: `#83a2c7`,
-      transition: `color 0.2s ease`,
-    },
-    '& i:hover': {
-      color: `#00060e`
-    }
-  },
   forgot: {
-    display: `flex`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    marginTop: `10px`,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
     '& a': {
-      fontSize: `20px`,
-      textDecoration: `none`
+      fontSize: 20,
+      textDecoration: 'none'
     }
   }
 };
@@ -78,35 +35,31 @@ class Login extends Component {
   render() {
     const { classes } = this.props;
     const { username, password } = this.state;
-    const form = this.state.loading ? <Loader /> : (
-      <form method="post">
-        <div className={classes.inputContainer}>
-          <label htmlFor="username">Username:</label>
+
+    return (
+      <Form>
+        <InputContainer label="Username:" >
           <TextInput required onChange={this.handleUsernameChange.bind(this)} value={username} />
-        </div>
-        <div className={classes.inputContainer}>
-          <label htmlFor="password">Password:</label>
-          <PasswordInput required value={password} onChange={this.handlePasswordChange.bind(this)}/>
-        </div>
+        </InputContainer>
+
+        <InputContainer label="Password:" >
+          <PasswordInput required value={password} onChange={this.handlePasswordChange.bind(this)} />
+        </InputContainer>
+
         <SubmitButton onClick={this.login}>Login</SubmitButton>
         <div className={classes.forgot}><NavLink to="/forgot">Forgot your password?</NavLink></div>
-      </form>
-    );
-    return (
-      <div className={classes.container}>
-        {form}
-      </div>
+      </Form>
     );
   }
-  handleUsernameChange(val){
-    this.setState({ username: val});
+  handleUsernameChange(val) {
+    this.setState({ username: val });
   }
-  handlePasswordChange(val){
-    this.setState({ password: val});
+  handlePasswordChange(val) {
+    this.setState({ password: val });
   }
   login() {
     const { username, password } = this.state;
-    login({username, password});
+    login({ username, password });
   }
 }
 

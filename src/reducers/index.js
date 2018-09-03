@@ -311,7 +311,25 @@ const reducer = (state = initialState, action) => {
           ...state.reset,
           redirectTo: '/login'
         }
-      }
+      };
+    case "MOBILE_NAV_LINK_CLICK":
+      return {
+        ...state,
+        displayMobileNav: false
+      };
+
+    case "MOBILE_NAV_DISPLAY_CHANGE":
+      return {
+        ...state,
+        displayMobileNav: !state.displayMobileNav
+      };
+
+    case "SCREEN_WIDTH_CHANGE":
+      return {
+        ...state,
+        windowWidth: window.innerWidth,
+        windowHeight: window.innerHeight
+      };
     default:
       return state;
   }

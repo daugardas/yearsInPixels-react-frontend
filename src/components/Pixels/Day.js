@@ -5,15 +5,21 @@ import { setSelected } from '../../actions/PixelsActions';
 
 const styles = {
   container: {
-    width: 28,
-    height: 28,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  desktop: {
+    width: 28,
+    height: 28,
+  },
+  mobile:{
+    width: 25,
+    height: 25
+  },
   border: {
     width: 24,
-    height: 24,
+    height: 23,
   },
   hoverBorder: {
     '&:hover': {
@@ -46,11 +52,11 @@ class Day extends Component {
     }
   }
   render() {
-    const { classes, date } = this.props;
+    const { classes, date, mode } = this.props;
     const { background, allowEdit, selected } = this.state;
     return (
-      <div className={classes.container} style={{ background: background }} onClick={this.handleEditClick.bind(this)}>
-        <div className={`${classes.border} ${classes.hoverBorder} ${selected ? classes.selected: ''} ${this.now === date ? classes.today : ''} ${!allowEdit ? classes.blockEdit : ''}`} ></div>
+      <div className={`${classes.container} ${mode ? classes.mobile : classes.desktop }`} style={{ background: background }} onClick={this.handleEditClick.bind(this)}>
+        <div className={`${classes.border} ${classes.hoverBorder} ${selected ? classes.selected : ''} ${this.now === date ? classes.today : ''} ${!allowEdit ? classes.blockEdit : ''}`} ></div>
       </div>
     );
   }
@@ -88,7 +94,7 @@ class Day extends Component {
   componentWillReceiveProps(props) {
     const { selected, date, pixel } = props;
     if (selected.date === date) {
-      this.setState({ selected: true})
+      this.setState({ selected: true })
       if (selected.id !== '' || selected.changed) {
         const moods = selected.moods.map(mood => { return { moodId: mood.id, percentage: +mood.percentage } });
         this.generateBackground(moods);

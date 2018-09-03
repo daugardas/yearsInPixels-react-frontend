@@ -47,85 +47,80 @@ function calculateOtherPercentages(id, percentage, moods) {
 }
 
 const styles = {
-  container: {
-    display: `flex`,
-    flexDirection: `column`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    '& span': {
-      alignSelf: `center`,
-      fontSize: `35px`,
-      color: `#364d6b`
-    }
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    fontSize: 35,
+    color: '#364d6b'
   },
-  emotionsList: {
-    display: `flex`,
-    width: `100%`,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
+  emotion: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   editEmotion: {
-    width: `100%`,
-    display: `flex`,
-    flexDirection: `column`,
-    alignItems: `center`,
-    justifyContent: `center`,
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 5,
     '& select': {
-      width: `100%`,
-      fontSize: `24px`,
-      border: `2px solid #dbf0fd`,
-      borderRadius: `8px`,
-      color: `#4D6E99`,
-      appearance: `none`,
-      textAlign: `center`,
-      background: `url(https://png.icons8.com/ios/150/3584fc/chevron-down-filled.png) 96% / 7% no-repeat white`,
-      paddingRight: `32px`,
-      paddingLeft: `10px`,
-      transition: `border-color 0.1s linear`,
-      height: `40px`,
-      // testing child hover, if not do it & select:hover
+      width: '100%',
+      fontSize: 24,
+      border: [2, 'solid', '#dbf0fd'],
+      borderRadius: '8px',
+      color: '#4D6E99',
+      appearance: 'none',
+      textAlign: 'center',
+      background: 'url(https://png.icons8.com/ios/150/3584fc/chevron-down-filled.png) 96% / 8% no-repeat white',
+      paddingRight: 32,
+      paddingLeft: 10,
+      transition: 'border-color 0.1s linear',
+      height: 40,
       '&:hover': {
-        cursor: `pointer`,
-        borderColor: `#8AB2E6`
+        cursor: 'pointer',
+        borderColor: '#8AB2E6'
       }
     }
   },
   addEmotion: {
-    display: `flex`,
-    margin: `5px 0`,
-    alignItems: `center`,
-    justifyContent: `center`,
+    display: 'flex',
+    margin: [[5, 0]],
+    alignItems: 'center',
+    justifyContent: 'center',
     '& i': {
-      fontSize: `25px`,
-      color: `#73E673`,
+      fontSize: 25,
+      color: "#73E673",
       '&:hover': {
-        cursor: `pointer`,
-        color: `#59B359`
+        cursor: "pointer",
+        color: "#59B359"
       }
     }
   },
   editJournal: {
-    display: `block`,
-    resize: `none`,
-    fontSize: `18px`,
-    fontFamily: `'Kalam', cursive`,
-    border: `2px solid #dbf0fd`,
-    borderRadius: `8px`,
-    padding: `5px`,
-    color: `#4D6E99`,
-    transition: `border-color 0.2s linear`,
-    width: `400px`,
+    resize: "none",
+    fontFamily: "'Kalam', cursive",
+    border: [2, 'solid', '#dbf0fd'],
+    borderRadius: 8,
+    width: '100%',
+    // padding: 5,
+    color: "#4D6E99",
+    transition: "border-color 0.2s linear",
     '&:focus': {
-      borderColor: `#8AB2E6`
+      borderColor: "#8AB2E6"
     }
   },
   buttons: {
-    marginTop: `15px`,
-    display: `flex`,
-    width: `100%`,
-    alignItems: `center`,
-    justifyContent: `space-evenly`
+    marginTop: 15,
+    display: "flex",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "space-evenly"
   },
   icon: {
     fontSize: 35,
@@ -134,15 +129,15 @@ const styles = {
     }
   },
   saveIcon: {
-    color: `#73E673`,
+    color: "#73E673",
     '&:hover': {
-      color: `#59B359`
+      color: "#59B359"
     }
   },
   cancelIcon: {
-    color: `#cc2828`,
+    color: "#cc2828",
     '&:hover': {
-      color: `#991e1e`
+      color: "#991e1e"
     }
   },
   removeIcon: {
@@ -153,6 +148,8 @@ const styles = {
       color: '#991e1e',
     }
   },
+  '@media (max-width: 1024px)': {
+  }
 };
 
 class Edit extends Component {
@@ -166,27 +163,29 @@ class Edit extends Component {
 
     const newPixel = selectedPixel.id === '';
 
-    return <div className={classes.container}>
-      <span>How did you feel?</span>
-      {
-        selectedPixel.moods.map((pixelMood, moodIndex) => {
-          return (
-            <div className={classes.emotionsList} key={`select-${moodIndex}`}>
-              <div className={classes.editEmotion}>
-                <select value={pixelMood.id} data-id={pixelMood.id} onChange={this.handleSelectChange.bind(this)} >
+    return <div>
+      <span className={classes.header}>How did you feel?</span>
+      <div>
+        {
+          selectedPixel.moods.map((pixelMood, moodIndex) => {
+            return (
+              <div className={classes.emotion} key={`select-${moodIndex}`}>
+                <div className={classes.editEmotion}>
+                  <select value={pixelMood.id} data-id={pixelMood.id} onChange={this.handleSelectChange.bind(this)} >
+                    {
+                      moods.map((mood, userIndex) => <option key={`option-${userIndex}`} value={mood.moodID}>{mood.moodName}</option>)
+                    }
+                  </select>
                   {
-                    moods.map((mood, userIndex) => <option key={`option-${userIndex}`} value={mood.moodID}>{mood.moodName}</option>)
+                    selectedPixel.moods.length > 1 ? <input type="range" value={pixelMood.percentage} data-id={pixelMood.id} onChange={this.handleInputChange.bind(this)} min="0" max="100" /> : null
                   }
-                </select>
-                {
-                  selectedPixel.moods.length > 1 ? <input type="range" value={pixelMood.percentage} data-id={pixelMood.id} onChange={this.handleInputChange.bind(this)} min="0" max="100" /> : null
-                }
+                </div>
+                {selectedPixel.moods.length > 1 ? <i className={`fas fa-trash-alt ${classes.icon} ${classes.removeIcon}`} onClick={this.handleMoodRemove.bind(this, pixelMood)} /> : null}
               </div>
-              {selectedPixel.moods.length > 1 ? <i className={`fas fa-trash-alt ${classes.icon} ${classes.removeIcon}`} onClick={this.handleMoodRemove.bind(this, pixelMood)} /> : null}
-            </div>
-          );
-        })
-      }
+            );
+          })
+        }
+      </div>
 
       {
         addMoods ? <div className={classes.addEmotion}><i className="fas fa-plus-square" onClick={this.handleAddMood.bind(this)} ></i></div> : null

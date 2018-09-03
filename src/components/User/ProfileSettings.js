@@ -13,18 +13,36 @@ import { updateProfile, deleteProfile } from '../../actions/UserActions';
 
 const styles = {
   container: {
-    display: 'flex',
-    width: 'auto',
-    height: 'auto',
+    marginTop: 20,
     '& form': {
       display: 'flex',
       flexDirection: 'column'
+    }
+  },
+  headerContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottom: '#364d6b 1px solid',
+    '& span': {
+      fontSize: 35,
+      color: '#364d6b'
     }
   },
   date: {
     float: 'right',
     fontSize: 35,
     color: '#364d6b'
+  },
+  '@media (max-width: 650px)': {
+    container: {
+      width: '95%'
+    }
+  },
+  '@media (min-width: 650px) and (max-width: 960px)': {
+    container: {
+      width: '44%'
+    }
   }
 };
 
@@ -43,11 +61,17 @@ class ProfileSettings extends Component {
     }
   }
   render() {
-    const { classes } = this.props;
+    const { classes, width } = this.props;
     const { date, username, email, password, newPassword, confNewPassword } = this.state;
-    return <div className={classes.container}>
+    return (
+    <div className={classes.container}>
+    
       <form method="post">
-
+        {
+          width <= 650 ? (<div className={classes.headerContainer}>
+          <span>Profile settings</span>
+        </div>) : null
+        }
         <InputContainer label='Profile Created:'>
           <span className={classes.date}>{date}</span>
         </InputContainer>
@@ -79,6 +103,7 @@ class ProfileSettings extends Component {
 
       </form>
     </div>
+    )
   }
 
   handleUsernameChange(val) {

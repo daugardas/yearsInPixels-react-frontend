@@ -35,7 +35,10 @@ const initialState = {
     redirectTo: '',
     password: '',
     confPassword: ''
-  }
+  },
+  windowWidth: window.innerWidth,
+  windowHeight: window.innerHeight,
+  displayMobileNav: false
 };
 
 export default initialState;

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Recaptcha from 'react-recaptcha';
 import injectSheet from 'react-jss';
 
-import Loader from './Loader';
+import Form from './FormContainer';
+import InputContainer from './Inputs/InputContainer';
 import TextInput from './Inputs/TextInput';
 import PasswordInput from './Inputs/PasswordInput';
 import EmailInput from './Inputs/EmailInput';
@@ -10,33 +11,20 @@ import SubmitButton from './SubmitButton';
 
 import { register } from '../actions/RegisterActions';
 import store from '../stores';
-import { createNotification } from '../actions/notificationsActions'
+import { createNotification } from '../actions/notificationsActions';
+
 const styles = {
-  container: {
-    display: `block`,
-    margin: `auto`,
-    position: `absolute`,
-    width: `auto`,
-    top: `50%`,
-    left: `50%`,
-    transform: `translate(-50%, -50%)`,
-    height: `auto`,
-    '& form': {
-      display: `flex`,
-      flexDirection: `column`
+  recaptchaContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  '@media (max-width: 650px)': {
+    recaptchaContainer: {
+      width: 300,
+      margin: [[10, 0, 5, 0]],
     }
   },
-  inputContainer: {
-    width: `auto`,
-    margin: `12px 0`,
-    '& label': {
-      fontSize: `35px`,
-      color: `#364d6b`
-    }
-  },
-  recaptcha: {
-    alignSelf: 'center'
-  }
 };
 
 class Register extends Component {
@@ -56,38 +44,34 @@ class Register extends Component {
   render() {
     const { classes } = this.props;
     const { username, email, password, confPassword } = this.state;
-    const form = this.state.loading ? (
-      <Loader />
-    ) : (
-        <form method="post">
-          <div className={classes.inputContainer}>
-            <label htmlFor="username">Username:</label>
-            <TextInput required onChange={this.handleUsernameChange.bind(this)} value={username} />
-          </div>
-          <div className={classes.inputContainer}>
-            <label htmlFor="email">Email:</label>
-            <EmailInput required onChange={this.handleEmailChange.bind(this)} value={email} />
-          </div>
-          <div className={classes.inputContainer}>
-            <label htmlFor="password">Password:</label>
-            <PasswordInput required value={password} onChange={this.handlePassChange.bind(this)} />
-          </div>
-          <div className={classes.inputContainer}>
-            <label htmlFor="conf-password">Confirm password:</label>
-            <PasswordInput required value={confPassword} onChange={this.handleConfPassChange.bind(this)} />
-          </div>
+
+    return (
+      <Form>
+        <InputContainer label="Username:">
+          <TextInput required onChange={this.handleUsernameChange.bind(this)} value={username} />
+        </InputContainer>
+
+        <InputContainer label="Email:">
+          <EmailInput required onChange={this.handleEmailChange.bind(this)} value={email} />
+        </InputContainer>
+
+        <InputContainer label="Password:" >
+          <PasswordInput required value={password} onChange={this.handlePassChange.bind(this)} />
+        </InputContainer>
+
+        <InputContainer label="Confirm password:">
+          <PasswordInput required value={confPassword} onChange={this.handleConfPassChange.bind(this)} />
+        </InputContainer>
+
+        <div className={classes.recaptchaContainer}>
           <Recaptcha
-            className={classes.recaptcha}
             sitekey="6Lf1HFwUAAAAAAEIUqAnwrGrXJtqqL_ya6tPV7bS"
             verifyCallback={this.recaptchaVerify}
           />
-          <SubmitButton onClick={this.register}>Register</SubmitButton>
-        </form>
-      );
-    return (
-      <div className={classes.container}>
-        {form}
-      </div>
+        </div>
+
+        <SubmitButton onClick={this.register}>Register</SubmitButton>
+      </Form>
     );
   }
   handleUsernameChange(val) {

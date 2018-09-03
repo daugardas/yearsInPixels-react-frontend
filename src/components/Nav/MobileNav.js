@@ -15,61 +15,61 @@ const styles = {
     overflow: 'hidden'
   },
   link: {
-    width: `100%`,
-    height: `60px`,
-    display: `flex`,
-    flexShrink: `1`,
-    alignItems: `flex-end`,
-    justifyContent: `center`,
-    textDecoration: `none`,
-    fontSize: ` 45px`,
-    transition: `transform 0.25s ease, font-weight 0.2s`,
-    padding: '15px 0',
-    color: `#7c95a0`,
+    width: '100%',
+    height: 45,
+    display: 'flex',
+    flexShrink: '1',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    textDecoration: 'none',
+    fontSize: 35,
+    transition: 'transform 0.25s ease, font-weight 0.2s',
+    padding: [[15, 0]],
+    color: '#7c95a0',
     '&:hover': {
-      fontWeight: `700`,
-      transform: `scale(1.08)`,
-      cursor: `pointer`
+      fontWeight: '700',
+      transform: 'scale(1.08)',
+      cursor: 'pointer'
     },
     '&:not(:last-child)': {
       borderBottom: '2px solid #d8efff'
     }
   },
   activeLink: {
-    color: `#4b5b66`
+    color: '#4b5b66'
   },
   enter: {
     height: 0
   },
   enterActive: {
-    height: 365
+    height: 228.2
   },
   exit: {
-    height: 365
+    height: 228.2
   },
   exitActive: {
     height: 0
   },
   loggedEnterActive: {
-    height: 274
+    height: 365
   },
   loggedExit: {
-    height: 274
+    height: 365
   }
 };
 
 class MobileNav extends Component {
   render() {
-    const { classes, display, logged } = this.props;
+    const { classes, display, logged, onLinkClick } = this.props;
     const links = logged ? (<div>
-      <NavLink activeClassName={classes.activeLink} to='/profile' className={classes.link}>{this.props.username}</NavLink>
-      <NavLink activeClassName={classes.activeLink} to="/pixels" className={classes.link}>Pixels</NavLink>
-      <NavLink exact activeClassName={classes.activeLink} to="/" className={classes.link}>About</NavLink>
-      <NavLink activeClassName={classes.activeLink} to="/logout" className={classes.link}>Log out</NavLink>
+      <NavLink activeClassName={classes.activeLink} to='/profile' className={classes.link} onClick={onLinkClick} >{this.props.username}</NavLink>
+      <NavLink activeClassName={classes.activeLink} to="/pixels" className={classes.link} onClick={onLinkClick} >Pixels</NavLink>
+      <NavLink exact activeClassName={classes.activeLink} to="/" className={classes.link} onClick={onLinkClick} >About</NavLink>
+      <NavLink activeClassName={classes.activeLink} to="/logout" className={classes.link} onClick={onLinkClick} >Log out</NavLink>
     </div>) : (<div>
-      <NavLink activeClassName={classes.activeLink} to="/login" className={classes.link}>Login</NavLink>
-      <NavLink activeClassName={classes.activeLink} to="/register" className={classes.link}>Register</NavLink>
-      <NavLink exact activeClassName={classes.activeLink} to="/" className={classes.link}>About</NavLink>
+      <NavLink activeClassName={classes.activeLink} to="/login" className={classes.link} onClick={onLinkClick} >Login</NavLink>
+      <NavLink activeClassName={classes.activeLink} to="/register" className={classes.link} onClick={onLinkClick} >Register</NavLink>
+      <NavLink exact activeClassName={classes.activeLink} to="/" className={classes.link} onClick={onLinkClick} >About</NavLink>
     </div>);
 
     // using react-transition-group component
@@ -80,8 +80,8 @@ class MobileNav extends Component {
       timeout={120}
       classNames={{
         enter: classes.enter,
-        enterActive: logged ? classes.enterActive : classes.loggedEnterActive,
-        exit: logged ? classes.exit : classes.loggedExit,
+        enterActive: logged ? classes.loggedEnterActive : classes.enterActive,
+        exit: logged ? classes.loggedExit : classes.exit,
         exitActive: classes.exitActive
       }}>
       <div className={classes.links}>{links.props.children}</div>

@@ -5,24 +5,35 @@ import Day from './Day';
 
 const styles = {
   container: {
-    display: `grid`,
-    width: `100%`,
-    gridAutoRows: `30px`,
-    alignItems: `center`,
-    justifyContent: `center`,
+    display: 'grid',
+    width: '100%',
+    gridAutoRows: '30px',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   name: {
-    fontSize: `20px`,
-    display: `flex`,
-    alignItems: `center`,
-    justifyContent: `center`
+    display: 'flex',
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  '@media (max-width: 420px)  and (min-width: 360px)': {
+    container: {
+      gridAutoRows: '27px'
+    }
+  },
+  '@media (max-width: 360px)': {
+    container: {
+      gridAutoRows: '26px'
+    }
   }
 };
 
 class Month extends Component {
   render() {
     const monthDate = new Date(this.props.date);
-    const { classes, pixels, moods, selected } = this.props;
+    const { classes, pixels, moods, selected, mode } = this.props;
 
     const monthDaysCount = new Date(new Date(monthDate).setFullYear(monthDate.getFullYear(), monthDate.getMonth() + 1, 0)).getDate();
     let monthDays = new Array(monthDaysCount);
@@ -45,7 +56,7 @@ class Month extends Component {
         <div className={classes.name}>{monthDate.toDateString().split(' ')[1]}</div>
         {
           monthDays.map((day, index) => {
-            return <Day key={index} date={day.date} moods={moods} pixel={day.mood} selected={selected} />
+            return <Day key={index} date={day.date} moods={moods} pixel={day.mood} selected={selected} mode={mode} />
           })
         }
       </div>

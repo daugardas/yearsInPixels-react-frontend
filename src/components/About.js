@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import injectSheet from 'react-jss';
 
+import Footer from './Footer';
+
 const styles = {
   container: {
     display: 'flex',
@@ -72,6 +74,7 @@ class About extends Component {
           The Year in Pixels chart was created by Camille or <span> </span>
           <a target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/passioncarnets/">@passioncarnets</a>.
         </p>
+        <Footer />
       </div>
     );
   }

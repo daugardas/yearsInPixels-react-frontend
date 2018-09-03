@@ -16,7 +16,8 @@ const styles = {
     width: 'max-content',
     top: '-120%',
     transform: 'translateX(-50%)',
-    fontSize: 22
+    fontSize: 25,
+    fontWeight: 'bold'
   }
 };
 

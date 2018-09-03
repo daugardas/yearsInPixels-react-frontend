@@ -3,9 +3,10 @@ import injectSheet from 'react-jss';
 
 const styles = {
   container: {
-    display: `flex`,
-    alignItems: `center`,
-    justifyContent: `center`
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10
   }
 };
 

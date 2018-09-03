@@ -50,17 +50,22 @@ class Buttons extends Component {
   render() {
     const { classes, display, onEdit } = this.props;
     const { removeCounter, removeCounterStyle } = this.state;
-    return !display ? null : (
+
+
+    return display ? (
       <div className={classes.container}>
 
         <i className={`fas fa-edit ${classes.icon} ${classes.editIcon}`} onClick={onEdit}></i>
-        <Tooltip tip='Hold for 3 sec' hide={removeCounterStyle.visibility !== 'hidden'}>
+        {/* <Tooltip tip='Hold for 3 sec' hide={removeCounterStyle.visibility !== 'hidden'}>
+          <i className={`fas fa-trash-alt ${classes.icon} ${classes.removeIcon}`} onMouseDown={this.startCountDown.bind(this)} onMouseUp={this.cancelCountDown.bind(this)}></i>
+        </Tooltip> */}
+        <Tooltip tip={`${removeCounterStyle.visibility !== 'hidden' ? removeCounter : 'Hold for 3 sec'}`} hide={false}>
           <i className={`fas fa-trash-alt ${classes.icon} ${classes.removeIcon}`} onMouseDown={this.startCountDown.bind(this)} onMouseUp={this.cancelCountDown.bind(this)}></i>
         </Tooltip>
 
-        <div className={classes.removeCounter} style={removeCounterStyle}>{removeCounter}</div>
+        {/* <div className={classes.removeCounter} style={removeCounterStyle}>{removeCounter}</div> */}
       </div>
-    )
+    ) : null;
   }
   startCountDown() {
     const { onRemove } = this.props;

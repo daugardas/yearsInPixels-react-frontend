@@ -5,12 +5,16 @@ import formatDate from '../../../functions/formatDate';
 
 const styles = {
   date: {
-    display: `flex`,
-    flexDirection: `row`,
-    alignItems: `center`,
-    justifyContent: `center`,
-    fontSize: `30px`,
-    position: `relative`
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 30,
+  },
+  '@media (max-width: 560px)': {
+    date: {
+      fontSize: 25
+    }
   }
 };
 

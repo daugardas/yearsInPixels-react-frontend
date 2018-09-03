@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import injectSheet from 'react-jss';
 
+import { widthChange } from '../actions/screenSizeActions';
+
 const styles = {
   canvas: {
     position: `absolute`,
-    top: `0`,
-    left: `0`,
-    zIndex: `-100`
+    top: 0,
+    left: 0,
+    zIndex: -3
   }
 };
 
@@ -65,6 +67,7 @@ class BackgroundCanvas extends Component {
     this.drawBackgroundLines();
     window.onresize = () => {
       this.resize();
+      widthChange();
     };
 
   }
