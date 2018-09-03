@@ -31,7 +31,7 @@ class Nav extends Component {
     return (
       <nav className={classes.container}>
         <NavBars onClick={displayChange} clicked={displayMobileNav} width={width} />
-        {width < 1024 ? <MobileNav display={displayMobileNav} logged={logged} width={width} username={username} onLinkClick={linkClick} /> : <DesktopNav logged={logged} username={username} />}
+        {width < 1024 ? (<MobileNav display={displayMobileNav} logged={logged} width={width} username={username} onLinkClick={linkClick} />) : (<DesktopNav logged={logged} username={username} />)}
       </nav>
     );
   }

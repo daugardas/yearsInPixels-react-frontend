@@ -74,18 +74,22 @@ class MobileNav extends Component {
 
     // using react-transition-group component
 
-    return <CSSTransition
-      unmountOnExit
-      in={display}
-      timeout={120}
-      classNames={{
-        enter: classes.enter,
-        enterActive: logged ? classes.loggedEnterActive : classes.enterActive,
-        exit: logged ? classes.loggedExit : classes.exit,
-        exitActive: classes.exitActive
-      }}>
-      <div className={classes.links}>{links.props.children}</div>
-    </CSSTransition>
+    // return (
+    //   <CSSTransition
+    //     unmountOnExit
+    //     in={display}
+    //     timeout={120}
+    //     classNames={{
+    //       enter: classes.enter,
+    //       enterActive: logged ? classes.loggedEnterActive : classes.enterActive,
+    //       exit: logged ? classes.loggedExit : classes.exit,
+    //       exitActive: classes.exitActive
+    //     }}>
+    //     <div className={classes.links}>{links.props.children}</div>
+    //   </CSSTransition>
+    // );
+
+    return <div className={classes.links}>{links.props.children}</div>;
 
     // using react-css-transition component
 
