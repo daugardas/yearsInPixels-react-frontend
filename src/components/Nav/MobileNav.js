@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import injectSheet from 'react-jss';
-import { CSSTransition } from 'react-transition-group';
-// import { CSSTransition, transit } from 'react-css-transition';
 
 const styles = {
   links: {
@@ -38,23 +36,14 @@ const styles = {
   activeLink: {
     color: '#4b5b66'
   },
-  enter: {
+  closed: {
     height: 0
   },
-  enterActive: {
+  open: {
     height: 228.2
   },
-  exit: {
-    height: 228.2
-  },
-  exitActive: {
-    height: 0
-  },
-  loggedEnterActive: {
-    height: 365
-  },
-  loggedExit: {
-    height: 365
+  loggedOpen: {
+    height: 305
   }
 };
 
@@ -66,42 +55,14 @@ class MobileNav extends Component {
       <NavLink activeClassName={classes.activeLink} to="/pixels" className={classes.link} onClick={onLinkClick} >Pixels</NavLink>
       <NavLink exact activeClassName={classes.activeLink} to="/" className={classes.link} onClick={onLinkClick} >About</NavLink>
       <NavLink activeClassName={classes.activeLink} to="/logout" className={classes.link} onClick={onLinkClick} >Log out</NavLink>
-    </div>) : (<div>
-      <NavLink activeClassName={classes.activeLink} to="/login" className={classes.link} onClick={onLinkClick} >Login</NavLink>
-      <NavLink activeClassName={classes.activeLink} to="/register" className={classes.link} onClick={onLinkClick} >Register</NavLink>
-      <NavLink exact activeClassName={classes.activeLink} to="/" className={classes.link} onClick={onLinkClick} >About</NavLink>
-    </div>);
+    </div>) :
+      (<div>
+        <NavLink activeClassName={classes.activeLink} to="/login" className={classes.link} onClick={onLinkClick} >Login</NavLink>
+        <NavLink activeClassName={classes.activeLink} to="/register" className={classes.link} onClick={onLinkClick} >Register</NavLink>
+        <NavLink exact activeClassName={classes.activeLink} to="/" className={classes.link} onClick={onLinkClick} >About</NavLink>
+      </div>);
 
-    // using react-transition-group component
-
-    // return (
-    //   <CSSTransition
-    //     unmountOnExit
-    //     in={display}
-    //     timeout={120}
-    //     classNames={{
-    //       enter: classes.enter,
-    //       enterActive: logged ? classes.loggedEnterActive : classes.enterActive,
-    //       exit: logged ? classes.loggedExit : classes.exit,
-    //       exitActive: classes.exitActive
-    //     }}>
-    //     <div className={classes.links}>{links.props.children}</div>
-    //   </CSSTransition>
-    // );
-
-    return <div className={classes.links}>{links.props.children}</div>;
-
-    // using react-css-transition component
-
-    // return <CSSTransition
-    //   active={display}
-    //   className={classes.links}
-    //   defaultStyle={{ height: 0 }}
-    //   activeStyle={{ height: logged ? 365 : 274 }}
-    //   enterStyle={{ height: transit(logged ? 365 : 274, 150, 'ease-in') }}
-    //   leaveStyle={{ height: transit(0, 150, 'ease-in') }}>
-    //   {links.props.children}
-    // </CSSTransition>
+    return <div className={`${classes.links} ${display ? logged ? classes.loggedOpen : classes.open : classes.closed}`}>{links.props.children}</div>;
   }
 }
 
