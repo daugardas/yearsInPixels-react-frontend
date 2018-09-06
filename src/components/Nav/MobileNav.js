@@ -40,7 +40,7 @@ const styles = {
     height: 0
   },
   open: {
-    height: 228.2
+    height: 230
   },
   loggedOpen: {
     height: 305
