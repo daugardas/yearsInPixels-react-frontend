@@ -4,7 +4,6 @@ A web-app (maybe later on android and ios) project I made in my free time.
 
 ### To-do list
 
-- [ ] Fix bug: CSStransitions not working in mobilenav 
 - [ ] After deleting account, red notification shows up with no text
 - [ ] Fix bug: canceling pixel editing, shows no emotions
 - [ ] Make web-app mobile-responsive
