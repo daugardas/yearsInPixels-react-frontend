@@ -40,10 +40,10 @@ const styles = {
     height: 0
   },
   open: {
-    height: 230
+    height: 232
   },
   loggedOpen: {
-    height: 305
+    height: 312
   }
 };
 
