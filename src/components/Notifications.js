@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import injectSheet from 'react-jss';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+// import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import Notification from './Notifications/Notification';
 
@@ -14,7 +14,7 @@ const styles = {
     alignItems: `center`,
     position: `fixed`,
     zIndex: `999`,
-    top: 0,
+    top: 60,
     right: 0,
     marginTop: 10
   },
@@ -44,16 +44,26 @@ class Notifications extends Component {
   render() {
     const { classes, notes } = this.props;
 
+    // return (
+    //   <TransitionGroup className={classes.container}>
+    //     {
+    //       notes.map((notification) => (
+    //         <CSSTransition key={notification.id} timeout={200} classNames={{ appear: classes.enter, appearActive: classes.enterActive, enter: classes.enter, enterActive: classes.enterActive, exit: classes.exit, exitActive: classes.exitActive }} unmountOnExit onExited={this.removeNotification.bind(this, notification.id)}>
+    //           <Notification id={notification.id} notificationType={notification.type} removeNotification={this.removeNotification}>{notification.text}</Notification>
+    //         </CSSTransition>
+    //       ))
+    //     }
+    //   </TransitionGroup>
+    // );
+    
     return (
-      <TransitionGroup className={classes.container}>
-        {
+      <div className={classes.container}>
+      {
           notes.map((notification) => (
-            <CSSTransition key={notification.id} timeout={200} classNames={{ appear: classes.enter, appearActive: classes.enterActive, enter: classes.enter, enterActive: classes.enterActive, exit: classes.exit, exitActive: classes.exitActive }} unmountOnExit onExited={this.removeNotification.bind(this, notification.id)}>
-              <Notification id={notification.id} notificationType={notification.type} removeNotification={this.removeNotification}>{notification.text}</Notification>
-            </CSSTransition>
+            <Notification key={notification.id} id={notification.id} notificationType={notification.type} removeNotification={this.removeNotification}>{notification.text}</Notification>
           ))
         }
-      </TransitionGroup>
+      </div>
     );
   }
   newNotification(type, text) {
